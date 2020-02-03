@@ -14,6 +14,7 @@
     <br>
     <br>
     <img src="https://img.shields.io/badge/platform-android%20%7C%20ios%20%7C%20web%20%7C%20windows%20%7C%20linux%20%7C%20mac-%23097aba" alt="Platform">
+    <a href="https://paypal.me/otsmr"><img src="https://img.shields.io/badge/PayPal-Kaffee spendieren-%23097aba" alt="Kaffee"></a>
 </p>
 
 
