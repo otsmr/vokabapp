@@ -1,0 +1,220 @@
+.fastTabs
+    height: 100%
+    > div.fastTab
+        height: 100%
+        > div 
+            height: 100%
+            > div.kasten
+                height: 100%
+
+.selectexercise
+    color: var(--c-black)
+
+    [open],
+    [closed]
+        display: none
+    
+    .loader
+        padding: 70px 0
+        
+    .title
+        font-size: 25px
+        padding: 35px 22px 20px
+        margin: 0
+
+    .cart 
+        padding: 0 22px 20px
+        position: relative
+        &.disabled
+
+
+        .content
+            padding: 7px 14px
+            cursor: pointer
+
+        .header
+            font-size: 13px
+            margin: 0
+        b
+            font-size: 18px
+        
+        .schema
+            font-size: 12px
+            color: var(--c-grey-bababa)
+            margin: 0
+
+        .count
+            font-size: 25px
+            font-weight: bold
+            position: absolute
+            right: 35px
+            bottom: 25px
+
+
+.kasten
+    padding-top: 34px
+
+
+    .status
+        background: var(--c-white)
+        color: var(--c-black)
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,.13)
+        width: 95%
+        max-width: 300px
+        margin: 0 auto
+        display: flex
+        padding: 0px 14px
+        font-size: 17px
+        font-weight: bold
+        height: 50px
+        align-items: center
+        border-radius: 3px
+
+        p
+            padding: 0
+            margin: 0
+
+            &:nth-child(1)
+                border-right: 1px solid var(--c-grey-bababa)
+                padding-right: 14px
+            &:nth-child(2)
+                text-align: right
+                flex: 1
+    
+    .item
+        height: 283px
+        width: 95%
+        max-width: 300px
+        margin: 0 auto
+        margin-top: 34px
+        position: relative
+        display: flex
+        align-items: center
+        text-align: center
+        perspective: 800px
+        border: 1px solid var(--c-white) 
+        border-radius: 3px
+
+
+        .content
+            flex: 1
+            height: 100%
+            transform: rotateZ("0deg")
+            transition: 300ms
+            cursor: grab
+            background: var(--c-white)
+
+            &.grabbing
+                cursor: grabbing
+
+            .front, .behind
+                background: var(--c-white)
+                border-radius: 3px
+                box-shadow: 0 1px 14px 0 rgba(0,0,0,.13)
+                height: 100%
+                position: absolute
+                width: 100%
+                display: grid
+                align-items: center
+                padding: 15px
+                overflow: hidden
+
+            .front
+                z-index: 1
+            .behind
+                transform: rotateY(180deg)
+                z-index: 0
+
+            p
+                margin: 0
+                color: var(--c-black-force)
+
+            svg
+                width: 100%
+
+
+        .item-title
+            position: absolute
+            bottom: 5px
+            right: 5px
+            font-size: 11px
+            color: var(--c-grey-eee)
+            z-index: 2
+
+    .buttons
+        display: flex
+        width: 95%
+        max-width: 300px
+        margin: 0 auto
+        margin-top: 34px
+        padding: 0 13px
+
+        div div
+            cursor: pointer
+
+        div:nth-child(1)  .m-icon
+            background: var(--c-red)
+        div:nth-child(2)
+            flex: 1
+            .m-icon
+                background: var(--c-white-blue)
+        div:nth-child(3) .m-icon
+            background: var(--c-green)
+
+        div .m-icon
+            width: 60px
+            margin: 0 auto
+            height: 60px
+            display: block
+            line-height: 60px
+            text-align: center
+            border-radius: 50%
+            box-shadow: 0 1px 4px 0 rgba(0,0,0,.13)
+            font-size: 32px
+            color: var(--c-black-force)
+    .balken
+        height: 40px
+        box-shadow: 0 -3px 3px 0 rgba(0,0,0,.23)
+        width: 100%
+        bottom: 0
+        position: absolute
+        display: flex
+        div
+            height: 40px
+            transition: 300ms
+
+        [balken="1"]
+            background: var(--c-red)
+            width: 100%
+        [balken="2"]
+            background: var(--c-orange)
+        [balken="3"]
+            background: var(--c-yellow)
+
+        > div:last-child 
+            background: var(--c-green)
+
+[tabid="kasten"]
+    .empty
+        padding: 40px 0
+        text-align: center
+        .openItems
+            margin: -70px 0 80px
+            font-size: 56px
+            line-height: 0
+            color: var(--c-black)
+            text-align: center
+        i
+            font-size: 83px
+            margin-top: 40px
+        p
+            font-size: 18px
+            margin: 10px 0
+
+.pulseMe
+    animation: shadow-pulse 1s cubic-bezier(.24,0,.38,1) 1
+
+@keyframes shadow-pulse
+     100% 
+          box-shadow: 0 0 0 15px transparent
+     

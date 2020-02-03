@@ -1,0 +1,8 @@
+node_modules/
+public/
+tmp/
+
+build/www/
+build/platforms/
+
+VokabApp.apk

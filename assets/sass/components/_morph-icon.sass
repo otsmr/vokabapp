@@ -1,0 +1,22 @@
+@keyframes morph-toggle
+    0% 
+        background-position: 0px 0px
+    100% 
+        background-position: -432px 0px
+
+.morph-icon 
+    animation-duration: 300ms
+    animation-timing-function: steps(18)
+    width: 24px
+    height: 24px
+    background-repeat: no-repeat
+    cursor: pointer
+
+.morph-icon.play 
+    animation-name: morph-toggle
+
+
+.menu-1 
+    background-image: var(--path-menu-open)
+.menu-2 
+    background-image: var(--path-menu-close) 

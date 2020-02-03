@@ -1,0 +1,50 @@
+@import '../../node_modules/materialize-css/sass/materialize.scss'
+
+%shorten-long-text
+   white-space: nowrap
+   overflow: hidden
+   width: 100%
+   text-overflow: ellipsis
+
+$font-regular: Roboto-Regular
+$font-medium: Roboto-Medium
+    
+@import 'variablen/color'
+
+@import 'components/morph-icon'
+@import 'components/tabs'
+@import 'components/carts'
+@import 'components/btns'
+@import 'components/select'
+
+@import 'tabs/kasten'
+@import 'tabs/lists'
+@import 'tabs/statistics-boxes'
+
+@import 'layout/mobile'
+@import 'layout/main'
+@import 'layout/navigation'
+@import 'layout/colors'
+@import 'layout/math'
+
+
+*
+    box-sizing: border-box
+   
+body
+    font-family: $font-regular
+    margin: 0
+    color: var(--c-grey-three)
+
+.noselect
+    -webkit-touch-callout: none
+    -webkit-user-select: none
+    -khtml-user-select: none
+    -moz-user-select: none
+    -ms-user-select: none
+    user-select: none
+
+.notransition 
+    transition: none !important
+.transition_hundert 
+    transition: 50ms !important

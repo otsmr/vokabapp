@@ -1,0 +1,122 @@
+
+    
+.status-anzeige
+    display: flex
+    align-items: center
+    margin: 30px auto 0
+    width: 100%
+    padding: 0 30px
+
+    > div
+        flex: 1
+    > div:nth-child(2)
+        text-align: right
+
+.list-collaps
+    box-shadow: none
+    border: 0
+    margin: 0
+    margin: 30px auto 0
+    width: 94%
+    li 
+        background: var(--c-white)
+        color: var(--c-black)
+
+    .list-collaps
+        margin: 13px auto 0
+        .collapsible-header
+            padding: 0.7rem
+            p
+                font-size: 16px
+                font-weight: bold
+
+    .collapsible-header
+        position: relative
+        border-radius: 5px
+        background: var(--c-white)
+        color: var(--c-black)
+
+        .downCounter
+            color: var(--c-grey-bababa)
+            display: flex
+            align-items: center
+            font-size: 14px
+
+        p
+            font-size: 18px
+            padding-left: 7px
+            font-weight: bold
+            margin: 0
+            padding-right: 30px
+            @extend %shorten-long-text
+
+        &::after
+            content: "keyboard_arrow_down"
+            font-family: "Material Icons Round"
+            transform: rotateX(0deg)
+            position: absolute
+            right: 10px
+            font-size: 32px
+            margin-top: -12px
+            transition: 300ms
+    
+    li.active > .collapsible-header::after
+        transform: rotateX(180deg)
+
+    li li:first-child()
+        margin: 0
+    li li:last-child()
+        margin: 20px 0
+
+    .collapsible-header,
+    .collapsible-body
+        border-bottom: none
+    
+    .collapsible-body
+        padding: 0
+
+    li
+        box-shadow: 0 1px 4px rgba(0,0,0,0.13)
+        border-radius: 3px
+        padding: 4px 0
+        margin: 20px 0
+
+    .select-list
+        display: flex
+        width: 94%
+        margin: 5px auto
+        border: 2px solid var(--c-white)
+        border-radius: 6px
+        padding: 5px 15px
+        align-items: center
+        color: inherit
+        cursor: pointer
+        color: var(--c-black)
+
+        div:first-child()
+            flex: 1
+            max-width: calc(100% - 27px)
+        div:last-child()
+            min-width: 33px
+            margin-right: -24px
+
+        label
+            float: right
+            margin-top: 10px
+            margin-right: -11px
+
+        p
+            margin: 0px 0 2px
+            font-size: 14px
+            @extend %shorten-long-text
+        
+        span
+            margin: -3px 0 0
+            font-size: 11px
+            color: var(--c-grey-aaa)
+            display: block
+
+[tabid="lists:findMore"]
+    .preloader-wrapper
+        display: block
+        margin: 50px auto

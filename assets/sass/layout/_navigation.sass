@@ -1,0 +1,113 @@
+
+nav
+    height: 55px
+    background: var(--c-white)
+    line-height: 55px
+    box-shadow: none
+    
+
+    a
+        color: var(--c-black)
+
+nav header
+    display: flex
+    align-items: center
+    color: var(--c-black)
+    z-index: 101
+    position: fixed
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .23)
+    width: 100%
+    top: 0
+    background: var(--navigationheader-background)
+
+    .morph-icon
+        margin: 0 10px
+
+    p
+        margin: 0
+        padding: 0
+        flex: 1
+        color: var(--c-black)
+        font-family: $font-medium
+        font-size: 20px
+
+    .more
+        height: 40px
+        margin: 0 10px
+
+        .dropdown-content
+            margin-left: -96px
+            margin-top: -17px
+            min-width: 155px
+            li
+                min-height: 42px
+
+        .dropdown-content li > a,
+        .dropdown-content li > span
+            color: var(--c-black)
+            padding: 10px 15px
+
+
+nav .menu
+    position: absolute
+    top: 55px
+    left: 0
+    z-index: 100
+    background: var(--c-white)
+    box-shadow: 0 0 14px 0 rgba(0,0,0,.41)
+    width: 285px
+    height: calc(100% - 55px)
+    transform: translateX(-340px)
+    transition: 300ms ease
+    color: var(--c-black)
+
+    &::after
+        content: ""
+        height: calc(100vh - 56px)
+        width: 0
+        background: var(--c-grey-one)
+        top: 0
+        right: calc(285px - 100vw)
+        position: absolute
+        opacity: 0
+        
+
+    &.open
+        transform: translateX(0px)
+
+        &::after
+            transition: opacity 300ms
+            width: calc(100vw - 285px)
+            
+            transition-delay: 150ms
+            opacity: .2
+        
+
+    p
+        font-family: $font-medium
+        font-size: 25px
+        margin: 22px 13px 10px
+        line-height: 25px
+
+    ul
+        display: block
+
+        li
+            float: unset
+            width: 100%
+            display: flex
+            align-items: center
+            font-family: $font-medium
+            font-size: 20px
+            color: var(--c-black)
+            padding: 0 20px 0 46px
+            height: 43px
+            cursor: pointer
+
+            &:hover
+                background: var(--c-white-blue)
+
+
+            span
+                flex: 1
+                text-align: right

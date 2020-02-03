@@ -1,0 +1,23 @@
+
+main .tab
+    transform: translateX(calc(200vw))
+    height: 0
+    overflow: hidden
+
+    &.open
+        transition: transform 300ms
+        transform: translateX(0)
+        overflow: unset
+        overflow-x: hidden
+        min-height: 100%
+
+
+
+
+
+
+main .fastTabs
+    .fastTab
+        display: none
+        &.open
+            display: block

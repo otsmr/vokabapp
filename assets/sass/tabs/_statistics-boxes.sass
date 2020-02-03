@@ -1,0 +1,34 @@
+.statistics-boxes
+    display: flex
+    margin: 18px 0
+
+    .text
+        display: flex
+        align-items: center
+        color: var(--c-black)
+        p
+            margin: 0 4px 1px 0
+            font-size: 11px
+            opacity: .5
+
+    .process
+        flex: 1
+
+        .process-out
+            width: calc(100% - 10px)
+            background: var(--c-process-balken)
+            height: 26px
+            border-radius: 5px
+            overflow: hidden
+            position: relative
+            float: right
+
+            .in
+                height: 100%
+                background: var(--c-process-balken-in)
+
+            p
+                margin: 5px 9px
+                position: absolute
+                right: 0
+                font-size: 12px
