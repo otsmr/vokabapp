@@ -96,7 +96,7 @@ export default class Manage implements KastenInterface {
             this.callBack(this.items.map(e => {
                 return {
                     ...e,
-                    known: (e.trials <= 4) ? true : false 
+                    known: (e.trials <= globalThis.config.get("workflow:notKnownFromXAttempts")) ? true : false 
                 }
             }));
             return;

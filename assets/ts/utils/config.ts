@@ -22,7 +22,8 @@ class Config {
         const defaultConf = {
             workflow: {
                 direction:<string> "a>b", // a<>b, a>b und b>a
-                dailyThroughput:<number> 10
+                dailyThroughput:<number> 10,
+                notKnownFromXAttempts: 4
             },
             general: {
                 notify:<Boolean> false,
