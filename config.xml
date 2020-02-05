@@ -2,9 +2,9 @@
 <widget id="de.oproj.vokabapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     
     <name>VokabApp</name>
-    <description> VokabApp, ein quelloffener Vokabelkasten </description>
+    <description>VokabApp, eine mobile Anwendung um offline Vokabeln zu lernen</description>
 
-    <author href="https://tsmr.eu"> tsmr </author>
+    <author href="https://tsmr.eu">Tobias Müller</author>
 
     <content src="index.html" />
 
@@ -14,7 +14,7 @@
 
     <access origin="*" />
     
-    <icon src="res/icon.png" width="57" height="57" density="mdpi" />
+    <icon src="assets/img/logo.png" width="57" height="57" density="mdpi" />
 
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="BackgroundColor" value="0xff0000ff"/>

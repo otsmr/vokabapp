@@ -50,6 +50,7 @@ Im Browser `localhost:3000` öffnen.
 [Cordova](https://cordova.apache.org/) muss installiert sein.
 
 ```bash
+cordova platform add android
 node build
 ```
 

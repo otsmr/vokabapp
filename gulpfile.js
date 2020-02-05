@@ -17,7 +17,7 @@ const rename = require('gulp-rename');
 const path = require("path");
 const browserSync = require('browser-sync').create();
 
-const public = "./public/";
+const public = "./www/";
 const dist = "./assets/";
 const tmp = "./tmp/";
 
@@ -108,7 +108,7 @@ gulp.task('watch', () => {
 
     browserSync.init({
         server: {
-            baseDir: "./public",
+            baseDir: "./www",
             cors: true
         }
     });
