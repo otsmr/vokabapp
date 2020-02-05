@@ -1,8 +1,8 @@
-node_modules/
-tmp/
+/node_modules/
+/tmp/
 
-/www/**/*
-/platforms/**/*
-/plugins/**/*
+/www/
+/platforms/
+/plugins/
 
 VokabApp.apk

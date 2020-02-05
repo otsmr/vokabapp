@@ -49,9 +49,14 @@ Im Browser `localhost:3000` öffnen.
 
 [Cordova](https://cordova.apache.org/) muss installiert sein.
 
+Folgende Ordner manuell anlegen
++ platforms
++ plugins
+
 ```bash
 cordova platform add android
-node build
+cordova build android
+# node build
 ```
 
 # Screenshots
