@@ -25,12 +25,45 @@
     background-color: var(--c-primary)
 
 .btn-large:hover, .btn-small:hover, .btn:hover 
-    background-color: var(--c-primary)-hover
+    background-color: var(--c-primary-hover)
 
 .spinner-primary-only
     border-color: var(--c-primary)
 
 .modal,
 .modal .modal-footer
+    overflow-x: hidden
     background: var(--c-white)
+    color: var(--c-black)
+
+
+.timepicker-digital-display
+    background-color: var(--c-primary)
+
+.timepicker-tick.active,
+.timepicker-tick:hover 
+    background-color: var(--c-primary)
+
+.timepicker-canvas-bg,
+.timepicker-canvas-bearing
+    fill: var(--c-primary)
+
+.timepicker-canvas line
+    stroke: var(--c-primary)
+
+.timepicker-close
+    color: var(--c-primary)
+
+body.dark
+    .timepicker-plate 
+        background-color: #262626
+    .timepicker-tick
+        border-radius: 50%
+        color: #aaa
+
+input:not([type]):focus:not([readonly]), input[type="date"]:not(.browser-default):focus:not([readonly]), input[type="datetime-local"]:not(.browser-default):focus:not([readonly]), input[type="datetime"]:not(.browser-default):focus:not([readonly]), input[type="email"]:not(.browser-default):focus:not([readonly]), input[type="number"]:not(.browser-default):focus:not([readonly]), input[type="password"]:not(.browser-default):focus:not([readonly]), input[type="search"]:not(.browser-default):focus:not([readonly]), input[type="tel"]:not(.browser-default):focus:not([readonly]), input[type="text"]:not(.browser-default):focus:not([readonly]), input[type="time"]:not(.browser-default):focus:not([readonly]), input[type="url"]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly])
+    border-bottom: 1px solid var(--c-primary)
+    box-shadow: 0 1px 0 0 var(--c-primary)
+
+input
     color: var(--c-black)

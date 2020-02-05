@@ -1,5 +1,30 @@
 <div>
 <div class="cart">
+    <p class="title">Allgemein</p>
+    <div class="content">
+        <table>
+            <tr>
+                <td>Letzte Seite merken</td>
+                <td class="checkbox">
+                <label>
+                    <input config="general:saveOpenPage" type="checkbox" class="filled-in" checked="checked" />
+                    <span></span>
+                </label>
+                </td>
+            </tr>
+            <tr>
+                <td>Dark Mode</td>
+                <td class="checkbox">
+                <label>
+                    <input config="general:darkMode" type="checkbox" class="filled-in" checked="checked" />
+                    <span></span>
+                </label>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="cart">
     <p class="title">Workflow</p>
     <div class="content">
         <table>
@@ -41,42 +66,33 @@
         </table>
     </div>
 </div>
-
 <div class="cart">
-    <p class="title">Allgemein</p>
+    <p class="title">Benachrichtigung</p>
     <div class="content">
         <table>
             <tr>
-                <td>Benachrichtigung</td>
+                <td>1. Erinnerung</td>
                 <td class="checkbox">
                 <label>
-                    <input config="general:notify" type="checkbox" class="filled-in" checked="checked" />
+                    <input onclick="updateNotificationsUI(this)" config="notification:firstEnabled" type="checkbox" class="filled-in" checked="checked" />
                     <span></span>
                 </label>
                 </td>
             </tr>
+            <tr display="notification:firstEnabled" ><td class="timepicker-td"><input unfocus="true" config="notification:firstTime" placeholder="Zeit wählen" type="text" class="timepicker"></td></tr>
             <tr>
-                <td>Letzte Seite merken</td>
+                <td>2. Erinnerung</td>
                 <td class="checkbox">
                 <label>
-                    <input config="general:saveOpenPage" type="checkbox" class="filled-in" checked="checked" />
+                    <input onclick="updateNotificationsUI(this)" config="notification:secondEnabled" type="checkbox" class="filled-in" checked="checked" />
                     <span></span>
                 </label>
                 </td>
             </tr>
-            <tr>
-                <td>Dark Mode</td>
-                <td class="checkbox">
-                <label>
-                    <input config="general:darkMode" type="checkbox" class="filled-in" checked="checked" />
-                    <span></span>
-                </label>
-                </td>
-            </tr>
+            <tr display="notification:secondEnabled" ><td class="timepicker-td"><input unfocus="true" config="notification:secondTime" placeholder="Zeit wählen" type="text" class="timepicker"></td></tr>
         </table>
     </div>
 </div>
-
 <div class="cart">
     <p class="title">Synchronisation</p>
     <div class="content" notConnected>

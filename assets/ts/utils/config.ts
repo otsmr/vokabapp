@@ -26,10 +26,15 @@ class Config {
                 notKnownFromXAttempts: 4
             },
             general: {
-                notify:<Boolean> false,
                 openPage: ["kasten", "1"],
                 saveOpenPage:<Boolean> true,
                 darkMode:<Boolean> null
+            },
+            notification: {
+                firstEnabled:<Boolean> false,
+                firstTime:<number> null,
+                secondEnabled:<Boolean> false,
+                secondTime:<number> null
             },
             api: {
                 base:<string> "https://vokabapp.oproj.de/api/",

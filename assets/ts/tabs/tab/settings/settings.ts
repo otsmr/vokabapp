@@ -9,6 +9,12 @@ import templateHtml from "./template.html";
 import modalsHtml from "./modals.html";
 moment.locale('de');
 
+globalThis.updateNotificationsUI = (el) => { 
+    const $e = $(el);
+    console.log($e.is(":checked"));
+    $(`[display="${$e.attr("config")}"]`).css("display", ($e.is(":checked")) ? "flex" : "none")
+};
+
 class SettingsTabs extends Tab implements TabInterface {
 
     constructor () {
@@ -34,6 +40,11 @@ class SettingsTabs extends Tab implements TabInterface {
             }
             if (element.attr("number")) {
                 val = parseFloat(val);
+            }
+            if (element.attr("unfocus")) {
+                setTimeout(() => {
+                    element.blur();
+                }, 50);
             }
             globalThis.config.set(element.attr("config"), val);
         }));
@@ -105,6 +116,11 @@ class SettingsTabs extends Tab implements TabInterface {
 
         
         globalThis.M.AutoInit();
+
+        setTimeout(() => {
+            globalThis.updateNotificationsUI($(`[config="notification:firstEnabled"]`));
+            globalThis.updateNotificationsUI($(`[config="notification:secondEnabled"]`));
+        }, 50);
 
         this.setLastSync();
         
