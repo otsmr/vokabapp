@@ -4,6 +4,30 @@ import { getDBTime } from "../../utils/utils";
 
 class DBHistoryService extends DBService {
 
+    isEntryAtDay (call: {(isEnty: boolean)}, date:Date = new Date()) {
+
+        const day = getDBTime(date);
+
+        this._default(this.conn.select({
+            from: "historys",
+            where: {
+                time: {
+                    ">": day
+                }
+            },
+            limit: 1
+        }), (err, isEntry) => {
+
+            if (err) return globalThis.events.error("database", err);
+
+            call((isEntry.length === 0) ? false : true);
+
+        })
+
+
+
+    }
+
     getDataForSync (call) {
 
         this._default(this.conn.select({

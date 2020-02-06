@@ -1,4 +1,3 @@
-import {randomInt} from "../../../utils/utils";
 import { sortArray } from "./../../../utils/array";
 
 export class ListItems {

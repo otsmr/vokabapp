@@ -1,6 +1,7 @@
 import {Tab, TabInterface} from "../tab" 
 
 import apiClient from "../../../api/client";
+import { initMaterialize } from "../../../layout/materialize";
 import { dbService } from "../../../database/service/main";
 import { ListItems } from "./listItems";
 import modalsHtml from "./modals.html"
@@ -70,7 +71,7 @@ export default class Lists extends Tab implements TabInterface {
                 </div>`,
                 this.listItems.element
             );
-            globalThis.M.AutoInit();
+            initMaterialize();
 
             this.listItems.onClick = () => {
                 this.updateCounters();

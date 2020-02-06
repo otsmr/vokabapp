@@ -64,5 +64,8 @@ export class Events extends Event {
     historyChange() {
         this.triggers("historyChange");
     }
+    error(type, err) {
+        this.triggers("error", type, err);
+    }
 
 }

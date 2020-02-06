@@ -1,13 +1,16 @@
-import {threePointMenuInterfaces} from "../../../layout/threePointMenu.int";
-import {Tab, TabInterface} from "../tab" 
-
-import apiClient from "../../../api/client"
 import * as moment from 'moment';
 import 'moment/locale/de';
+moment.locale('de');
+
+import { threePointMenuInterfaces } from "../../../layout/threePointMenu.int";
+import { initMaterialize } from "../../../layout/materialize"
+import { Tab, TabInterface } from "../tab" 
+
+import apiClient from "../../../api/client"
 
 import templateHtml from "./template.html";
 import modalsHtml from "./modals.html";
-moment.locale('de');
+
 
 globalThis.updateNotificationsUI = (el) => { 
     const $e = $(el);
@@ -115,7 +118,7 @@ class SettingsTabs extends Tab implements TabInterface {
         });
 
         
-        globalThis.M.AutoInit();
+        initMaterialize();
 
         setTimeout(() => {
             globalThis.updateNotificationsUI($(`[config="notification:firstEnabled"]`));
@@ -178,7 +181,7 @@ class SettingsTabs extends Tab implements TabInterface {
                         globalThis.config.reset();
                         const oldElement = this.element;
                         oldElement.replaceWith(this.create());
-                        globalThis.M.AutoInit();
+                        initMaterialize();
                         this.updateConfigs();
                     });
                     this.openModal("resetSettings");

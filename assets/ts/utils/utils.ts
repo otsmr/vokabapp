@@ -9,6 +9,11 @@ export function getStartOfDay(date: Date = new Date()) {
     
 }
 
+export function addDays (date: Date, days) {
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
 export function morph (query:string):void  {
 
     const div:Element = document.querySelector(query);
@@ -59,5 +64,13 @@ export function updateThemeMode () {
     document.body.classList.remove("dark");
 
     if (isDarkMode) document.body.classList.add("dark");
+
+}
+
+export function initThemeMode () {
+
+    updateThemeMode();
+    globalThis.events.on("configChange", updateThemeMode);
+    globalThis.events.on("afterConfigSync", updateThemeMode);
 
 }
