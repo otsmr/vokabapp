@@ -2,14 +2,14 @@ import * as moment from 'moment';
 import 'moment/locale/de';
 moment.locale('de');
 
-import { threePointMenuInterfaces } from "../../../layout/threePointMenu.int";
-import { initMaterialize } from "../../../layout/materialize"
+import { threePointMenuInterfaces } from "../../layout/threePointMenu.int";
+import { initMaterialize } from "../../layout/materialize"
 import { Tab, TabInterface } from "../tab" 
 
-import apiClient from "../../../api/client"
+import apiClient from "../../api/client"
 
-import templateHtml from "./template.html";
-import modalsHtml from "./modals.html";
+import settingsHtml from "./settings.html";
+import modalsHtml from "./modals.html"
 
 
 globalThis.updateNotificationsUI = (el) => { 
@@ -32,7 +32,7 @@ class SettingsTabs extends Tab implements TabInterface {
             else this.setLastSync();
         })
 
-        this.element = $(templateHtml);
+        this.element = $(settingsHtml);
         this.modals = $(modalsHtml.replace("#VERSION#", globalThis.VERSION)).appendTo("main");
 
         this.element.find("[config]").on("change", ((event)=>{

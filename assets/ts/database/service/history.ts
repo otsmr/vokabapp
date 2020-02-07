@@ -24,8 +24,6 @@ class DBHistoryService extends DBService {
 
         })
 
-
-
     }
 
     getDataForSync (call) {
@@ -56,7 +54,6 @@ class DBHistoryService extends DBService {
                 });
     
             });
-
 
         });
 
@@ -144,7 +141,8 @@ class DBHistoryService extends DBService {
                     2: 0,
                     3: 0,
                     4: 0,
-                    5: 0
+                    5: 0,
+                    6: 0
                 };
 
                 result.forEach(e => {

@@ -1,5 +1,4 @@
 ///<reference path="../../node_modules/@types/jquery/jquery.d.ts" />
-///<reference path="./@types/html.modul.ts" />
 
 import g from "./globals"
 
@@ -7,7 +6,7 @@ import "./layout/navigation"
 import { registerEventsMaterialize } from "./layout/materialize"
 registerEventsMaterialize();
 
-import initTab from "./tabs/tabs"
+import initTab from "./tabs/index"
 import initThreePointMenu from "./layout/threePointMenu"
 
 import { initThemeMode } from "./utils/utils"

@@ -1,4 +1,4 @@
-import { sortArray } from "./../../../utils/array";
+import { sortArray } from "./../../utils/array";
 
 export class ListItems {
 

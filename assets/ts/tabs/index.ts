@@ -1,10 +1,10 @@
-import toggleNav from "./../layout/navigation"
-import { TabInterface } from "./tab/tab";
+import toggleNav from "../layout/navigation"
+import { TabInterface } from "./tab";
 
-import KastenTabs from "./tab/kasten/"
-import SettingsTabs from "./tab/settings/settings"
-import Lists from "./tab/lists/lists.tab"
-import StatisticsTab from "./tab/statistics/statistics.tab"
+import KastenTabs from "./kasten"
+import SettingsTabs from "./settings/settings"
+import Lists from "./lists/lists.tab"
+import StatisticsTab from "./statistics/statistics.tab"
 
 
 class Tabs {
@@ -13,10 +13,6 @@ class Tabs {
     focusedTab:TabInterface = null;
     blockChangeTab:boolean = false;
     rootElement:JQuery = $("main");
-
-    constructor () {
-        
-    }
 
     init () {
 

@@ -1,4 +1,4 @@
-<div>
+export default `<div>
 <div class="cart">
     <p class="title">Allgemein</p>
     <div class="content">
@@ -143,4 +143,4 @@
     </div>
 </div>
 <br><br>
-</div>
+</div>`

@@ -1,4 +1,5 @@
-<div><div class="modal" aboutPage>
+export default `<div>
+<div class="modal" aboutPage>
     <div class="modal-content">
         <h4>VokabApp</h4>
         <p style="margin: -10px 3px 0;">by TSMR.eu</p>
@@ -14,7 +15,6 @@
         <a class="modal-close waves-effect waves-dark btn-flat">Ok</a>
     </div>
 </div>
-
 
 <div class="modal" resetSettings>
     <div class="modal-content">
@@ -36,7 +36,6 @@
     </div>
 </div>
 
-
 <div class="modal" createNewSession>
     <div class="modal-content">
         <h4>Mit Odmin anmelden</h4>
@@ -52,4 +51,4 @@
     <div class="modal-footer">
         <a class="modal-close waves-effect waves-dark btn-flat">Ok</a>
     </div>
-</div></div>
+</div></div>`

@@ -1,4 +1,4 @@
-import {shuffleArray} from "../../../../utils/array"
+import {shuffleArray} from "../../../utils/array"
 import {KastenInterface} from "../manage.interface"
 
 import template from "./template";

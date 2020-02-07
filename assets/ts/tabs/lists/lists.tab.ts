@@ -1,10 +1,10 @@
-import {Tab, TabInterface} from "../tab" 
+import { Tab, TabInterface } from "../tab" 
 
-import apiClient from "../../../api/client";
-import { initMaterialize } from "../../../layout/materialize";
-import { dbService } from "../../../database/service/main";
+import apiClient from "../../api/client";
+import { initMaterialize } from "../../layout/materialize";
+import { dbService } from "../../database/service/main";
 import { ListItems } from "./listItems";
-import modalsHtml from "./modals.html"
+import { modalSaveChanges, statusDisplay, loader } from "./layout.html"
 
 export default class Lists extends Tab implements TabInterface {
 
@@ -61,14 +61,7 @@ export default class Lists extends Tab implements TabInterface {
 
             this.listItems = new ListItems(items);
 
-            this.element.empty().append(`
-                <div class="status-anzeige">
-                    <div>
-                        <span class="green-text"><span down>0</span> Herunterladen</span><br>
-                        <span class="red-text"><span del>0</span> Löschen</span>
-                    </div>
-                    <div> <a saveChanges class="btn btn-flat waves-effect"><i class="m-icon">save</i></a> </div>
-                </div>`,
+            this.element.empty().append(loader,
                 this.listItems.element
             );
             initMaterialize();
@@ -87,18 +80,8 @@ export default class Lists extends Tab implements TabInterface {
 
     create() {
 
-        this.element = $("<div>").append(`
-            <div class="preloader-wrapper small active" style='display: block; margin: 50px auto;'>
-                <div class="spinner-layer spinner-primary-only">
-                    <div class="circle-clipper left"> <div class="circle"></div>
-                    </div><div class="gap-patch"> <div class="circle"></div>
-                    </div><div class="circle-clipper right"> <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        this.modals = $(modalsHtml).appendTo("main");
+        this.element = $("<div>").append(statusDisplay);
+        this.modals = $(modalSaveChanges).appendTo("main");
 
         if (navigator.onLine) {
             globalThis.sync.syncMetaData(()=>{
@@ -107,15 +90,16 @@ export default class Lists extends Tab implements TabInterface {
         } else {
             this.createList();
         }
-
-
         return this.element;
+
     }
 
     updateCounters () {
+
         const changes = this.listItems.changes();
         this.element.find("[del]").text(changes.remove.length);
         this.element.find("[down]").text(changes.add.length);
+        
     }
 
     focus() {

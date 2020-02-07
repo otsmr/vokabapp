@@ -1,12 +1,12 @@
 
-import { threePointMenuInterfaces }  from "../../../layout/threePointMenu.int" 
-import { shuffleArray } from "../../../utils/array";
-import { getDBTime } from "../../../utils/utils";
+import { threePointMenuInterfaces }  from "../../layout/threePointMenu.int" 
+import { shuffleArray } from "../../utils/array";
+import { getDBTime } from "../../utils/utils";
 
 import SwipeManage from "./swiper/manage"
 
-import dbHistory from "../../../database/service/history";
-import dbKastenService from "../../../database/service/kasten";
+import dbHistory from "../../database/service/history";
+import dbKastenService from "../../database/service/kasten";
 
 
 export default class Kasten {
@@ -46,13 +46,29 @@ export default class Kasten {
 
     ready (items) {
 
+        // Kasten 6 ist der Letzte, weshalb die Items immer in diesem bleiben
+
+        
+        
         const insertItems = items.filter(e => e.known).map(e => {
             return {
-                box: parseInt(this.kastenID) + 1,
+                box: (parseInt(this.kastenID) === 6) ? 6 : parseInt(this.kastenID) + 1,
                 itemID: e.itemID,
                 time: getDBTime()
             }
         });
+        
+        if (parseInt(this.kastenID) === 5) {
+            // Im Kasten 5 falsch -> Item geht zurück in 2.
+            const backToKastenTwo = items.filter(e => !e.known).map(e => {
+                return {
+                    box: 2,
+                    itemID: e.itemID,
+                    time: getDBTime()
+                }
+            });
+            insertItems.push(backToKastenTwo);
+        }
 
         dbHistory.insertItemsInHistory(insertItems, (err, res)=>{
 
@@ -180,8 +196,7 @@ export default class Kasten {
 
         const itemsSelected = shuffleArray(items).slice(0, globalThis.config.get("workflow:dailyThroughput"));
 
-        let rounds = 5 - parseInt(this.kastenID);
-        if (rounds < 2) rounds = 2;
+        const rounds = [5, 5, 4, 4, 3, 2];
 
         this.element.empty().css({
             transform: "scale(0.9)",
@@ -207,7 +222,7 @@ export default class Kasten {
                 list.aTitel,
                 list.bTitel
             ],
-            rounds,
+            rounds: rounds[parseInt(this.kastenID) - 1],
             callBack: (items) => {
                 this.ready(items);
             }
