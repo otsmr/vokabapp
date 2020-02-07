@@ -14,9 +14,7 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-vibration": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-dialogs": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-local-notification": {}
     },
