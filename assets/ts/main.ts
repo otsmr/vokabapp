@@ -8,6 +8,7 @@ registerEventsMaterialize();
 
 import initTab from "./tabs/index"
 import initThreePointMenu from "./layout/threePointMenu"
+import intoduction from "./layout/introduction"
 
 import { initThemeMode } from "./utils/utils"
 initThemeMode();
@@ -31,8 +32,7 @@ const startUp = () => {
 
 }
 
-const startApp = () => {
-    
+const startApp2 = () => {
     const trigger = g.config.get("sync:trigger");
 
     if (navigator.onLine && ["startup", "always"].indexOf(trigger) > -1) {
@@ -42,6 +42,15 @@ const startApp = () => {
         });
 
     } else  startUp();
+}
+
+const startApp = () => {
+
+    if (g.config.get("general:displayIntroduction")) {
+        intoduction(startApp2);
+    } else startApp2();
+    
+
     
 }
 

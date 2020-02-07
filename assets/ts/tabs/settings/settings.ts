@@ -10,6 +10,7 @@ import apiClient from "../../api/client"
 
 import settingsHtml from "./settings.html";
 import modalsHtml from "./modals.html"
+import introduction from "./../../layout/introduction"
 
 
 globalThis.updateNotificationsUI = (el) => { 
@@ -185,6 +186,12 @@ class SettingsTabs extends Tab implements TabInterface {
                         this.updateConfigs();
                     });
                     this.openModal("resetSettings");
+                }
+            },
+            {
+                title: "Willkommen",
+                click: () => {
+                    introduction();
                 }
             },
             {

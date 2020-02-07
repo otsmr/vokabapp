@@ -62,7 +62,7 @@ export default class Lists extends Tab implements TabInterface {
 
             this.listItems = new ListItems(items);
 
-            this.element.empty().append(loader,
+            this.element.empty().append(statusDisplay,
                 this.listItems.element
             );
             initMaterialize();
@@ -81,7 +81,7 @@ export default class Lists extends Tab implements TabInterface {
 
     create() {
 
-        this.element = $("<div>").append(statusDisplay);
+        this.element = $("<div>").append(loader);
         this.modals = $(modalSaveChanges).appendTo("main");
 
         if (navigator.onLine) {

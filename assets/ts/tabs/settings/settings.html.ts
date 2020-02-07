@@ -34,7 +34,7 @@ export default `<div>
                     <select config="workflow:direction">
                         <option value="a>b">A&rarr;B</option>
                         <option value="b>a">B&rarr;A</option>
-                        <option value="a<>b">A&#8596;B</option>
+                        <option value="a<>b">A&#8697&#65038;B</option>
                     </select>
                 </td>
             </tr>
@@ -46,7 +46,6 @@ export default `<div>
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>
-                        <option value="100">100</option>
                     </select>
                 </td>
             </tr>
@@ -95,6 +94,17 @@ export default `<div>
 </div>
 <div class="cart">
     <p class="title">Synchronisation</p>
+    <div class="content">
+        <table>
+            <tr>
+                <td> API-Server </td>
+                <td style="flex: 3;">
+                    <input config="api:base" type="text" placeholder="https://">
+                </td>
+            </tr>
+            <tr> <td> <a href="https://github.com/otsmr/vokabapp-server">Quellcode vom Server</a> </td> </tr>
+        </table>
+    </div><br>
     <div class="content" notConnected>
         <table>
             <tr><td>

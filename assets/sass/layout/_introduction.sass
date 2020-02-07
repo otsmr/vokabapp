@@ -1,0 +1,45 @@
+
+.introduction
+    position: fixed
+    width: 100%
+    height: 100%
+    background: #fff
+    z-index: 10000
+    padding: 0 40px
+
+    .logo
+        position: absolute
+        top: 80px
+        img
+            margin-left: -7px
+
+
+    .button
+        background: var(--c-primary)
+        font-size: 31px
+        font-weight: bold
+        color: #fff
+        text-align: center
+        margin: 0 auto
+        min-width: 225px
+        width: calc(100% - 80px)
+        max-width: 
+        padding: 8px 0
+        border-radius: 55px
+        box-shadow: 0 0 58px rgba(0,0,0,.56)
+        position: absolute
+        bottom: 100px
+        left: 50%
+        transform: translateX(-50%)
+        cursor: pointer
+        max-width: 300px
+
+        &:active
+            transform: translateX(-50%) scale(.95)
+
+    .slogan
+        font-size: 51px
+        font-weight: bold
+        line-height: 64px
+        top: 225px
+        position: absolute
