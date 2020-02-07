@@ -9,8 +9,6 @@ import {
 } from "./tables"
 
 export const idbCon = new JsStore.Instance();
-// export const idbCon = new JsStore.Instance(new Worker("./../lib/jsstore.worker.min.js"));
-
 export const dbname = 'VokabApp';
 
 export const initJsStore = () => {

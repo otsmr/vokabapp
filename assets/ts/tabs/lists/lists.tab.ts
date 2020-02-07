@@ -23,6 +23,7 @@ export default class Lists extends Tab implements TabInterface {
                     this.listItems.updateList(items);
                     this.updateCounters();
                     globalThis.events.listChanged();
+                    this.setTitle();
                 })
             }
         }
@@ -102,8 +103,12 @@ export default class Lists extends Tab implements TabInterface {
         
     }
 
-    focus() {
+    setTitle () {
         globalThis.tabs.setTitle("Listen");
+    }
+
+    focus() {
+        this.setTitle();
     }
 
     blur() {}

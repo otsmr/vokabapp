@@ -7,10 +7,6 @@ interface CallBack {
 
 class APIClient {
 
-    constructor () {
-        
-    }
-
     get baseUrl () {
 
         return globalThis.config.get("api:base");
@@ -103,7 +99,5 @@ class APIClient {
     }
 
 }
-
-
 
 export default new APIClient();

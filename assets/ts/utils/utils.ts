@@ -74,3 +74,34 @@ export function initThemeMode () {
     globalThis.events.on("afterConfigSync", updateThemeMode);
 
 }
+
+export function getColorPercent (color1:string, ratio: number) {
+
+    let color2 = 'F4F5F7';
+    if (globalThis.config.get("general:darkMode")) {
+        color2 = '222222';
+    }
+    ratio = ratio / 4;
+
+    const hex = function(x) {
+        x = x.toString(16);
+        return (x.length == 1) ? '0' + x : x;
+    };
+
+    const r = Math.ceil(parseInt(color1.substring(0,2), 16) * ratio + parseInt(color2.substring(0,2), 16) * (1-ratio));
+    const g = Math.ceil(parseInt(color1.substring(2,4), 16) * ratio + parseInt(color2.substring(2,4), 16) * (1-ratio));
+    const b = Math.ceil(parseInt(color1.substring(4,6), 16) * ratio + parseInt(color2.substring(4,6), 16) * (1-ratio));
+
+    return hex(r) + hex(g) + hex(b);
+
+}
+
+export function pulseElement (element: JQuery, call: Function) {
+
+    var elm = element.addClass("pulseMe")[0];
+    var newone = elm.cloneNode(true);
+    elm.parentNode.replaceChild(newone, elm);
+    
+    $(newone).click(()=>{call()});
+
+}

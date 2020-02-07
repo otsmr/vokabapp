@@ -28,7 +28,8 @@ class Config {
             general: {
                 openPage: ["kasten", "1"],
                 saveOpenPage:<Boolean> true,
-                darkMode:<Boolean> null
+                darkMode:<Boolean> null,
+                displayIntroduction: <Boolean> true
             },
             notification: {
                 firstEnabled:<Boolean> false,

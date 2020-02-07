@@ -38,7 +38,7 @@ class Sync {
             if (status) ok = status;
             count++;
             if (count === 2) {
-                globalThis.config.set("api:lastSync", new Date().getTime());
+                if (ok) globalThis.config.set("api:lastSync", new Date().getTime());
                 doneCall();
             }
         }
@@ -70,7 +70,6 @@ class Sync {
                     } else globalThis.events.afterConfigSync(false);
                 }
                 done(true);
-                
             } 
         });
 
@@ -109,9 +108,6 @@ class Sync {
 
         });
 
-
-        
-
     }
 
     syncMetaData (done:Function = () => {}) {
@@ -121,18 +117,13 @@ class Sync {
             data: {getMetaData: true},
             call: (err, response:any) => {
                 if (err) {
-                    console.warn(response);
+                    globalThis.events.error("API", "Fehler beim Herunterladen der Liste.");
                 } else {
                     dbService.importMetadata(response);
-                    console.log(response);
                 }
                 done();
             }
         })
-
-        // dbService.getDownloadedLists((err, lists)=>{
-        //     console.log(err, lists);
-        // })
 
     }
 

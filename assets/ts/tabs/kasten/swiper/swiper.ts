@@ -1,4 +1,5 @@
 import fitty from "fitty";
+import { getColorPercent, pulseElement } from "../../../utils/utils";
 
 export default class Swipper {
 
@@ -26,9 +27,7 @@ export default class Swipper {
         this.front = kastenElement.find(".front");
 
         for (let i = 1;i<=rounds;i++) {
-            this.root.find(".balken").append(`
-                <div balken="${i}"></div>
-            `)
+            this.root.find(".balken").append(`<div balken="${i}"></div>`);
         }
 
         let touchend = 'touchend';
@@ -53,7 +52,10 @@ export default class Swipper {
         });
 
         this.rotate.bind('touchstart mousedown', (event:any) => {
-            event = this.getEvent(event);
+
+            try {
+                event.clientX = event.originalEvent.touches ?  event.originalEvent.touches[0].pageX : event.clientX;
+            } catch (error) {}
 
             this.inFocus = true;
             this.timetamp = new Date().getTime();
@@ -76,17 +78,8 @@ export default class Swipper {
                 this.toggleTurn();
                 this.inFocus = false;
             }
-
         });
 
-    }
-
-    getEvent (event) {
-        try {
-            event.clientX = event.originalEvent.touches ?  event.originalEvent.touches[0].pageX : event.clientX;
-        } catch (error) {
-        }
-        return event;
     }
 
     toggleTurn () {
@@ -111,37 +104,43 @@ export default class Swipper {
         }, 125)
 
         setTimeout(() => {
+
             this.displayFront();
             this.rotate.find("p").animate({
                 opacity: 1
-            }, 125)
+            }, 125);
 
             setTimeout(() => {
                 this.rotate.addClass("notransition");
                 this.rotate.css({ transform: `rotateY(0deg)` });
                 this.toggleText();
                 this.displayFront();
+
                 setTimeout(() => {
                     this.rotate.removeClass("notransition");
                     this.turnBlocked = false;
                 }, 50);
                 
             }, 150);
+
         }, 150);
 
-        this.pulseElement(this.root.find(".toggleTurn"), () => {
+        pulseElement(this.root.find(".toggleTurn"), () => {
             this.toggleTurn();
         });
 
     }
 
     toggleText () {
+
         const behindHTML = this.behind.html();
         this.behind.html(this.front.html())
         this.front.html(behindHTML)
+
     }
 
     displayFront () {
+
         if (this.isBehind) {
             this.front.css("z-index", 0);
             this.behind.css("z-index", 1);
@@ -153,27 +152,6 @@ export default class Swipper {
 
     }
 
-    getColorPercent (color1:string, ratio: number) {
-
-        let color2 = 'F4F5F7';
-        if (globalThis.config.get("general:darkMode")) {
-            color2 = '222222';
-        }
-        ratio = ratio / 4;
-
-        const hex = function(x) {
-            x = x.toString(16);
-            return (x.length == 1) ? '0' + x : x;
-        };
-
-        const r = Math.ceil(parseInt(color1.substring(0,2), 16) * ratio + parseInt(color2.substring(0,2), 16) * (1-ratio));
-        const g = Math.ceil(parseInt(color1.substring(2,4), 16) * ratio + parseInt(color2.substring(2,4), 16) * (1-ratio));
-        const b = Math.ceil(parseInt(color1.substring(4,6), 16) * ratio + parseInt(color2.substring(4,6), 16) * (1-ratio));
-
-        return hex(r) + hex(g) + hex(b);
-        
-    }
-
     swiping (event) {
 
         let swipe = this.swipe = event.clientX - this.startClientX;
@@ -181,7 +159,7 @@ export default class Swipper {
         if (swipe < 0) color = "ff5722";
 
         const css = {
-            background: "#" + this.getColorPercent(color, Math.sqrt(Math.pow(swipe, 2))/300)
+            background: "#" + getColorPercent(color, Math.sqrt(Math.pow(swipe, 2))/300)
         }
  
         this.front.css(css);
@@ -215,19 +193,9 @@ export default class Swipper {
 
     }
 
-    pulseElement (element: JQuery, call: Function) {
-
-        var elm = element.addClass("pulseMe")[0];
-        var newone = elm.cloneNode(true);
-        elm.parentNode.replaceChild(newone, elm);
-        
-        $(newone).click(()=>{call()});
-
-    }
-
     triggerWrong () {
 
-        this.pulseElement(this.root.find(".wrong"), () => {
+        pulseElement(this.root.find(".wrong"), () => {
             this.triggerWrong();
         });
 
@@ -246,7 +214,7 @@ export default class Swipper {
 
     triggerRight () {
 
-        this.pulseElement(this.root.find(".right"), () => {
+        pulseElement(this.root.find(".right"), () => {
             this.triggerRight();
         });
 
@@ -265,8 +233,8 @@ export default class Swipper {
     }
 
     endSwipe () {
-        this.rotate.removeClass("transition_hundert");
 
+        this.rotate.removeClass("transition_hundert");
         this.inFocus = false;
 
         if (this.swipe >= 100) this.triggerRight();
@@ -299,18 +267,12 @@ export default class Swipper {
 
     addFittyText (element: JQuery, html:string) {
 
-        // if (html.indexOf("<") < 0) {
-            element.html(`<div><p>${html}</p></div>`);
+        element.html(`<div><p>${html}</p></div>`);
 
-            fitty(element.find("p")[0], {
-                maxSize: 70,
-                multiLine: true
-            });
-
-        // } else {
-        //     console.log("ADD NO HTML");
-        //     element.html(html);
-        // }
+        fitty(element.find("p")[0], {
+            maxSize: 70,
+            multiLine: true
+        });
 
     }
 
@@ -321,25 +283,25 @@ export default class Swipper {
             return 0;
         }
     }
+
     get isBehind ():Boolean {
         return Boolean(Math.sqrt(Math.pow(Math.round((this.rotateDeg)/180) % 2, 2)));
     }
-
 
     set typeName (name: string[]) {
         this._typeNames = name;
         this.isFrontOpen = false;
         this.root.find(".status").children().eq(1).text(this._typeNames[0]);
     }
+
     set stillOpenTrials (trias: number) {
         this.root.find(".status").children().eq(0).text(`Noch ${trias}`);
     }
 
     set aHtml (html:string) {
-
         this.addFittyText(this.front, html);
-
     }
+
     set bHtml (html:string) {
         this.addFittyText(this.behind, html);
     }

@@ -73,36 +73,6 @@ export class DBService extends BaseService {
 
     }
 
-    getDownloadedLists (call: CallBack) {
-
-        this.getDownloadedListIDs((err, result)=>{
-            if (err) return call(err, result);
-
-            const sqlQuery = {
-                from: "lists",
-                join:[{
-                    with: "subGroups",
-                    on: "lists.subGroupID=subGroups.subGroupID"
-                },{
-                    with: "groups",
-                    on: "groups.groupID=subGroups.groupID"
-                }],
-                where: []
-            }
-    
-            for (const listID of result) {
-                sqlQuery.where.push({
-                    or: { listID: listID }
-                })
-            }
-            
-            if (sqlQuery.where.length === 0) return call(false, []);
-            this._default(this.conn.select(sqlQuery), call);
-
-        });
-        
-    }
-
     removeLists (listIDs: number[], call: CallBack) {
 
         const sqlQuery = {
