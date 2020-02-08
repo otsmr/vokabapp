@@ -4,6 +4,7 @@ import {KastenInterface} from "../manage.interface"
 import template from "./template";
 
 import Swipper from "./swiper";
+import { randomInt } from "../../../utils/utils";
 
 export default class Manage implements KastenInterface {
 
@@ -114,8 +115,10 @@ export default class Manage implements KastenInterface {
             typeName.reverse();
             htmlContent.reverse();
         } else if (direction === "a<>b") {
-            typeName = shuffleArray(typeName);
-            htmlContent = shuffleArray(htmlContent);
+            if (randomInt(0)) {
+                typeName.reverse();
+                htmlContent.reverse();
+            }
         }
 
         this.swipper.typeName = typeName;

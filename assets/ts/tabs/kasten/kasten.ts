@@ -48,8 +48,6 @@ export default class Kasten {
 
         // Kasten 6 ist der Letzte, weshalb die Items immer in diesem bleiben
 
-        
-        
         const insertItems = items.filter(e => e.known).map(e => {
             return {
                 box: (parseInt(this.kastenID) === 6) ? 6 : parseInt(this.kastenID) + 1,
@@ -196,7 +194,7 @@ export default class Kasten {
 
         const itemsSelected = shuffleArray(items).slice(0, globalThis.config.get("workflow:dailyThroughput"));
 
-        const rounds = [5, 5, 4, 4, 3, 2];
+        const rounds = [4, 4, 3, 3, 2, 2];
 
         this.element.empty().css({
             transform: "scale(0.9)",
