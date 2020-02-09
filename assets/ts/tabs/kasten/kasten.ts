@@ -46,9 +46,10 @@ export default class Kasten {
 
     ready (items) {
 
+        if (parseInt(this.kastenID) === 0) items = [];
+        
         // Kasten 6 ist der Letzte, weshalb die Items immer in diesem bleiben
-
-        const insertItems = items.filter(e => e.known).map(e => {
+        let insertItems = items.filter(e => e.known).map(e => {
             return {
                 box: (parseInt(this.kastenID) === 6) ? 6 : parseInt(this.kastenID) + 1,
                 itemID: e.itemID,
@@ -67,7 +68,6 @@ export default class Kasten {
             });
             insertItems.push(backToKastenTwo);
         }
-
         dbHistory.insertItemsInHistory(insertItems, (err, res)=>{
 
             if (err) M.toast({html: "Fehler: " + res.message});
@@ -86,6 +86,14 @@ export default class Kasten {
 
         const kastenID = parseInt(this.kastenID);
 
+        if (kastenID === 0) {
+
+            return dbKastenService.getItemsForKastenTrain((err, itemsInKasten)=>{
+                if (err) return console.log(itemsInKasten);
+                callBack(itemsInKasten);
+            });
+
+        }
         if (kastenID === 1) {
 
             return dbKastenService.getItemsForKastenOne((err, itemsInKasten)=>{
@@ -194,7 +202,7 @@ export default class Kasten {
 
         const itemsSelected = shuffleArray(items).slice(0, globalThis.config.get("workflow:dailyThroughput"));
 
-        const rounds = [4, 4, 3, 3, 2, 2];
+        const rounds = [4, 4, 4, 3, 3, 2, 2];
 
         this.element.empty().css({
             transform: "scale(0.9)",
@@ -220,7 +228,7 @@ export default class Kasten {
                 list.aTitel,
                 list.bTitel
             ],
-            rounds: rounds[parseInt(this.kastenID) - 1],
+            rounds: rounds[parseInt(this.kastenID)],
             callBack: (items) => {
                 this.ready(items);
             }

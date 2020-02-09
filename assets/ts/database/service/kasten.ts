@@ -1,5 +1,6 @@
 import { DBService, CallBack } from "./main";
 import { getStartOfDay, getDBTime } from "./../../utils/utils";
+import { shuffleArray } from "../../utils/array";
 
 class DBKastenService extends DBService {
 
@@ -24,12 +25,8 @@ class DBKastenService extends DBService {
     
             let timeForKasten = time * 2;
     
-            switch (kastenID) {
-                case 2: timeForKasten = time; break; // Gestern 
-                case 3: timeForKasten = time - 86400; break; // Vor zwei Tag
-                case 4: timeForKasten = time - 86400 * 7; break; // Vor einer Woche
-                case 5: timeForKasten = time - 86400 * 30; break;// Vor einem Monat Woche
-            
+            if (kastenID >= 2 && kastenID <= 6) {
+                timeForKasten = time - globalThis.config.get(`boxTimes:${kastenID}`)
             }
 
             const openItems = items.length;
@@ -110,6 +107,22 @@ class DBKastenService extends DBService {
         }), (err, historys) => {
 
             this._returnItemsForKasten(1, err, historys, historys, call);
+
+        });
+
+    }
+
+    getItemsForKastenTrain (call: CallBack) {
+
+        //* Alle, die noch nicht in der History sind.
+
+        this._default(this.conn.select({
+            from: 'items'
+        }), (err, items) => {
+
+            items = shuffleArray(items);
+
+            this._returnItemsForKasten(0, err, items, items, call);
 
         });
 

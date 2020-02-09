@@ -25,6 +25,13 @@ class Config {
                 dailyThroughput:<number> 10,
                 notKnownFromXAttempts: 4
             },
+            boxTimes: {
+                2: 0, 
+                3: 86400, 
+                4: 86400 * 7, 
+                5: 86400 * 30, 
+                6: 86400 * 60, 
+            },
             general: {
                 openPage: ["kasten", "1"],
                 saveOpenPage:<Boolean> true,
