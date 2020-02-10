@@ -12,7 +12,7 @@ export interface CallBack {
 
 export class DBService extends BaseService {
 
-    importMetadata ({groups, subGroups, lists}: {
+    async importMetadata ({groups, subGroups, lists}: {
         groups: GroupsModal,
         subGroups: SubGroupsModal,
         lists: ListsModal
@@ -36,9 +36,9 @@ export class DBService extends BaseService {
             }
         })
 
-        this.conn.insert({ into: "groups", upsert: true, values: groups });
-        this.conn.insert({ into: "subGroups", upsert: true, values: subGroups });
-        this.conn.insert({ into: "lists", upsert: true, values: lists });
+        await this.conn.insert({ into: "groups", upsert: true, values: groups });
+        await this.conn.insert({ into: "subGroups", upsert: true, values: subGroups });
+        await this.conn.insert({ into: "lists", upsert: true, values: lists });
 
     }
 

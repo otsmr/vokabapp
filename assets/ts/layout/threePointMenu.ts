@@ -1,4 +1,12 @@
-import {threePointMenuInterface, threePointMenuInterfaces} from "./threePointMenu.int" 
+
+export interface threePointMenuInterface {
+    title:string;
+    click:(event:any) => void;
+    display?:() => boolean;
+}
+
+export interface threePointMenuInterfaces extends Array<threePointMenuInterface>{}
+
 
 class ThreePointMenu {
 
@@ -29,11 +37,9 @@ class ThreePointMenu {
         for (const i in items) {
             const item:threePointMenuInterface = items[i];
             if (typeof item.display === "undefined"  || (item.display && item.display())) {
-                this.element.append($(`
-                    <li>
-                        <a>${item.title} </a>
-                    </li>
-                `).click(item.click));
+                this.element
+                    .append($(`<li><a>${item.title} </a></li>`)
+                    .click(item.click));
                 count++;
             }
         }
@@ -63,6 +69,4 @@ class ThreePointMenu {
 
 }
 
-export default ():object => {
-    return new ThreePointMenu();
-}
+globalThis.threePointMenu = new ThreePointMenu()

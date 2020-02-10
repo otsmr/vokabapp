@@ -12,10 +12,8 @@ const createNotifications = (id:number, time: string, isEntryToday: boolean) => 
 
     for (let i = 0; i <= 14; i++) {
 
-        if (i === 0 && isEntryToday) {
-            d = addDays(d, 1);
-        }
-
+        if (i === 0 && isEntryToday) d = addDays(d, 1);
+        
         globalThis.cordova.plugins.notification.local.schedule({
             id: rand + i,
             title: `${id}. Er­in­ne­rung 🔔 (Tag ${i})`,
@@ -31,41 +29,38 @@ const createNotifications = (id:number, time: string, isEntryToday: boolean) => 
 
 const updateNotification = () => {
 
-    if (!globalThis.cordova) {
-        return globalThis.events.error("notifications", "Cordova ist nicht definiert.");
-    }
+    if (!globalThis.cordova) return;
 
-    globalThis.cordova.plugins.notification.local.cancelAll(console.log)
+    globalThis.cordova.plugins.notification.local.cancelAll();
 
     dbHistory.isEntryAtDay((isEntryToday: boolean) => {
 
-        const config = globalThis.config.get;
+        const c = globalThis.config.get;
 
-        if (config("notification:firstEnabled")) {
-            const time = config("notification:firstTime");
-            createNotifications(1, time, isEntryToday);
+        if (c("notification:firstEnabled")) {
+            createNotifications(1, c("notification:firstTime"), isEntryToday);
         }
-        if (config("notification:secondEnabled")) {
-            const time = config("notification:secondTime");
-            createNotifications(2, time, isEntryToday);
-
+        if (c("notification:secondEnabled")) {
+            createNotifications(2, c("notification:secondTime"), isEntryToday);
         }
 
     });
 
 }
 
+const events = globalThis.events;
 
-export const initNotification = () => {
+events.on("historyChange", () => {
+    updateNotification();
+})
 
-    globalThis.events.on("historyChange", () => {
-        updateNotification();
-    })
-    globalThis.events.on("configChange", (changedConfigID) => {
-        if (changedConfigID.startsWith("notification:")) {
-            updateNotification();
-        }
-    })
+events.on("configChange", (changedConfigID) => {
+
+    if (!changedConfigID.startsWith("notification:")) return;
     updateNotification();
 
-}
+});
+
+events.on("startApp", () => {
+    updateNotification();
+})

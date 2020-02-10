@@ -3,130 +3,121 @@ import apiClient from "./client";
 import { dbService } from "./../database/service/main";
 import dbHistory from "./../database/service/history";
 
-class Sync {
+export const initSync = ():void => {
 
-    constructor () {
+    globalThis.events.on("configChange", () => {
+        checkSyncTigger("config");
+    })
 
-        globalThis.events.on("configChange", () => {
-            this.checkSyncTigger("config");
-        })
+    globalThis.events.on("historyChange", () => {
+        checkSyncTigger("history");
+    })
 
-        globalThis.events.on("historyChange", () => {
-            this.checkSyncTigger("history");
-        })
+}
 
-    }
-
-    checkSyncTigger (type) {
-        if (
-            globalThis.config.get("sync:trigger") === "change" ||
-            globalThis.config.get("sync:trigger") === "always") {
-
-                if (type === "config") this.syncConfig();
-                if (type === "history") this.syncProgress();
-        }
-    }
-
-    init (doneCall: Function = () => {}) {
+export const syncAll = (doneCall: {(err: boolean)} = () => {}):void => {
         
-        let count = 0;
-        let ok = false;
-        if (!globalThis.config.get("api:sessionID")) {
-            return doneCall();
+    let count = 0;
+    let ok = false;
+    if (!globalThis.config.get("api:sessionID")) {
+        return doneCall(true);
+    }
+    
+    const done = (status: boolean) => {
+        if (status) ok = status;
+        count++;
+        if (count === 2) {
+            if (ok) globalThis.config.set("api:lastSync", new Date().getTime());
+            doneCall(false);
         }
-        const done = (status) => {
-            if (status) ok = status;
-            count++;
-            if (count === 2) {
-                if (ok) globalThis.config.set("api:lastSync", new Date().getTime());
-                doneCall();
+    }
+
+    syncConfig((err: boolean)=>{
+        done(!err);
+    });
+    syncProgress((err: boolean)=>{
+        done(!err);
+    });
+
+}
+
+export const syncMetaData = (done: {(err: boolean)} = () => {}):void => {
+
+    apiClient.basicPost({
+        path: "getlist.php",
+        data: {getMetaData: true},
+        call: async (err: boolean, response:any) => {
+            if (err) {
+                globalThis.events.error("API", "Fehler beim Herunterladen der Liste.");
+                return done(true);
             }
+            await dbService.importMetadata(response);
+            done(false);
         }
-        this.syncConfig((s)=>{
-            done(s);
-        });
-        this.syncProgress((s)=>{
-            done(s);
-        });
+    })
 
-    }
+}
 
-    syncConfig (done:Function = () => {}) {
+const checkSyncTigger = (type:string):void => {
 
-        const config = globalThis.config.exportConfig();
+    const trigger = globalThis.config.get("sync:trigger");
+    if ( ["change", "always"].indexOf(trigger) === -1)  return;
 
-        apiClient.basicPost({
-            path: "sync.php",
-            data: {config},
-            call: (err, response) => {
-                if(err) {
-                    console.warn(response);
-                    return done(false);
-                } else {
-                    globalThis.config.set("api:lastSync", new Date().getTime());
-                    if (response.config) {
-                        globalThis.config.importConfig(response);
-                        globalThis.events.afterConfigSync(true);
-                    } else globalThis.events.afterConfigSync(false);
-                }
-                done(true);
-            } 
-        });
-
-    }
-
-    syncProgress (done:Function = () => {}) {
-
-        dbHistory.getDataForSync((history)=>{
-
-            apiClient.basicPost({
-                path: "sync.php",
-                data: {history},
-                call: async (err, res) => {
-    
-                    if (err) return done(false)
-                    else {
-    
-                        globalThis.config.set("api:lastSync", new Date().getTime());
-    
-                        if (res.historysFromServer && res.historysFromServer.length > 0) {
-                            // Herunterladen
-                            await dbHistory.importNewHistory(res.historysFromServer);
-                        }
-
-                        if (res.uploadedHistorys && res.uploadedHistorys.length > 0) {
-                            // Hochgeladen
-                            await dbHistory.uploadedHistorys(res.uploadedHistorys);
-                        }
-    
-                    }
-    
-                    done(true);
-                    
-                } 
-            });
-
-        });
-
-    }
-
-    syncMetaData (done:Function = () => {}) {
-
-        apiClient.basicPost({
-            path: "getlist.php",
-            data: {getMetaData: true},
-            call: (err, response:any) => {
-                if (err) {
-                    globalThis.events.error("API", "Fehler beim Herunterladen der Liste.");
-                } else {
-                    dbService.importMetadata(response);
-                }
-                done();
-            }
-        })
-
+    switch (type) {
+        case "config": syncConfig(); break;
+        case "history": syncProgress(); break;
     }
 
 }
 
-export default Sync;
+const syncConfig = (done: {(err: boolean)} = () => {}) => {
+
+    const config = globalThis.config.exportConfig();
+
+    apiClient.basicPost({
+        path: "sync.php",
+        data: {config},
+        call: (err, response) => {
+            if(err) {
+                console.warn(response);
+                return done(true);
+            } else {
+                globalThis.config.set("api:lastSync", new Date().getTime());
+                if (response.config) {
+                    globalThis.config.importConfig(response);
+                    globalThis.events.afterConfigSync(true);
+                } else globalThis.events.afterConfigSync(false);
+            }
+            done(false);
+        } 
+    });
+
+}
+
+const syncProgress = (done: {(err: boolean)} = () => {}): void => {
+
+    dbHistory.getDataForSync((history)=>{
+
+        apiClient.basicPost({
+            path: "sync.php",
+            data: {history},
+            call: async (err: boolean, res: { historysFromServer?: any[], uploadedHistorys?: any[] }) => {
+
+                if (err) return done(true);
+
+                globalThis.config.set("api:lastSync", new Date().getTime());
+
+                if (res.historysFromServer && res.historysFromServer.length > 0) 
+                    await dbHistory.importNewHistory(res.historysFromServer); // Neue HistoryItems heruntergeladen
+
+                if (res.uploadedHistorys && res.uploadedHistorys.length > 0) 
+                    await dbHistory.uploadedHistorys(res.uploadedHistorys); // Diese HistoryItems wurden hochgeladen
+
+                done(false);
+                
+            } 
+        });
+
+    });
+
+}

@@ -1,56 +1,40 @@
 ///<reference path="../../node_modules/@types/jquery/jquery.d.ts" />
 
-import g from "./globals"
+const g = globalThis;
+g.VERSION = "1.0.0";
 
-import "./layout/navigation"
-import { registerEventsMaterialize } from "./layout/materialize"
-registerEventsMaterialize();
-
-import initTab from "./tabs/index"
-import initThreePointMenu from "./layout/threePointMenu"
-import intoduction from "./layout/introduction"
+import "./utils/events"
+import "./utils/config"
+import "./utils/notifications"
 
 import { initThemeMode } from "./utils/utils"
+
+import "./tabs/index"
+
+import "./layout/navigation"
+import "./layout/threePointMenu"
+import "./layout/materialize"
+import displayIntroduction from "./layout/introduction"
+
+
+import { initSync, syncAll } from "./api/sync";
+
 initThemeMode();
-
-import { initNotification } from "./utils/notifications"
-
-const startUp = () => {
-
-    initNotification();
-
-    $("nav").fadeIn(0);
-    $("main").empty();
-
-    g.threePointMenu = initThreePointMenu();
-    g.tabs = initTab();
-
-    let openTab = ["kasten", "1"];
-    if (g.config.get("general:saveOpenPage")) 
-        openTab = globalThis.config.get("general:openPage");
-    g.tabs.changeTab(openTab);
-
-}
-
-const startApp2 = () => {
-    const trigger = g.config.get("sync:trigger");
-
-    if (navigator.onLine && ["startup", "always"].indexOf(trigger) > -1) {
-        
-        g.sync.init(()=>{
-            startUp();
-        });
-
-    } else  startUp();
-}
+initSync();
 
 const startApp = () => {
 
     if (g.config.get("general:displayIntroduction")) {
-        intoduction(startApp2);
-    } else startApp2();
-    
+        return displayIntroduction(globalThis.events.startApp());
+    }
 
+    const trigger = g.config.get("sync:trigger");
+
+    if (navigator.onLine && ["startup", "always"].indexOf(trigger) > -1) {
+        
+        syncAll(globalThis.events.startApp);
+
+    } else globalThis.events.startApp();
     
 }
 

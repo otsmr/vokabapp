@@ -27,11 +27,6 @@ export const initMaterialize = () => {
 
 }
 
-export const registerEventsMaterialize = () => {
-
-    globalThis.events.on("afterPageChange", () => {
-        console.log("OK");
-        initMaterialize();
-    })
-
-}
+globalThis.events.on("afterPageChange", () => {
+    initMaterialize();
+})

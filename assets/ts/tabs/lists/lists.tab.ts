@@ -5,6 +5,7 @@ import { initMaterialize } from "../../layout/materialize";
 import { dbService } from "../../database/service/main";
 import { ListItems } from "./listItems";
 import { modalSaveChanges, statusDisplay, loader } from "./layout.html"
+import { syncMetaData } from "../../api/sync";
 
 export default class Lists extends Tab implements TabInterface {
 
@@ -85,7 +86,7 @@ export default class Lists extends Tab implements TabInterface {
         this.modals = $(modalSaveChanges).appendTo("main");
 
         if (navigator.onLine) {
-            globalThis.sync.syncMetaData(()=>{
+            syncMetaData(()=>{
                 this.createList();
             });
         } else {

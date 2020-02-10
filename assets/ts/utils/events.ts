@@ -1,71 +1,64 @@
 "use strict";
 
-class Event {
+import { randomInt } from "./utils";
 
-    trigger:object = {};
+const trigger:any = {};
+const events:any = {}
 
-    getRandomNumber() {
-        var pow = Math.pow(8, 10);
-        return Math.floor(Math.random() * (9 * pow)) + pow;
-    }
+events.on = (name:string, call:Function, eventID:number = -1): number => {
 
-    on(name:string, call:Function, eventID:number = -1) {
+    if (!trigger[name]) trigger[name] = [];
+    if (eventID === -1) eventID = randomInt(6);
 
-        if (!this.trigger[name]) this.trigger[name] = [];
-        if (eventID === -1) eventID = this.getRandomNumber();
+    trigger[name].push({ eventID, call });
+    return eventID;
 
-        this.trigger[name].push({ eventID, call });
-        return eventID;
+}
 
-    }
+events.off = (eventID:number) => {
 
-    off(eventID:number) {
+    for (const i in trigger) {
+        const items:any = trigger[i];
 
-        for (const i in this.trigger) {
-            const items:any = this.trigger[i];
-
-            for (let ii in items) {
-                if (items[ii].eventID === eventID) {
-                    items.splice(items.indexOf(items[ii]), 1);
-                }
+        for (let ii in items) {
+            if (items[ii].eventID === eventID) {
+                items.splice(items.indexOf(items[ii]), 1);
             }
         }
-
-    }
-
-    triggers (name:string, a:any = null, b:any = null, c:any = null, d:any = null) {
-        const trigger = this.trigger[name];
-        if (trigger) for (const i in trigger) trigger[i].call(a, b, c, d);
     }
 
 }
 
-export class Events extends Event {
-
-    constructor() {
-        super();
-    }
-
-    pageChange(pageID:string) {
-        this.triggers("pageChange", pageID);
-    }
-    afterPageChange(pageID:string) {
-        this.triggers("afterPageChange", pageID);
-    }
-    configChange(changedConfigID:string) {
-        this.triggers("configChange", changedConfigID);
-    }
-    afterConfigSync(changes: Boolean) {
-        this.triggers("afterConfigSync", changes);
-    }
-    listChanged() {
-        this.triggers("listChanged");
-    }
-    historyChange() {
-        this.triggers("historyChange");
-    }
-    error(type, err) {
-        this.triggers("error", type, err);
-    }
-
+const triggers = (name:string, a:any = null, b:any = null, c:any = null, d:any = null) => {
+    const triggerItems = trigger[name];
+    if (triggerItems) 
+        for (const i in triggerItems) triggerItems[i].call(a, b, c, d);
 }
+
+
+events.pageChange = (pageID:string) => {
+    triggers("pageChange", pageID);
+}
+events.afterPageChange = (pageID:string) => {
+    triggers("afterPageChange", pageID);
+}
+events.configChange = (changedConfigID:string) => {
+    triggers("configChange", changedConfigID);
+}
+events.afterConfigSync = (changes: Boolean) => {
+    triggers("afterConfigSync", changes);
+}
+events.listChanged = () => {
+    triggers("listChanged");
+}
+events.historyChange = () => {
+    triggers("historyChange");
+}
+events.startApp = () => {
+    triggers("startApp");
+}
+events.error = (type, err) => {
+    triggers("error", type, err);
+}
+
+globalThis.events = events;

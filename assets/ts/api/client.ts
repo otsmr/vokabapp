@@ -2,15 +2,13 @@ import { randomInt } from "../utils/utils";
 import { dbService } from "../database/service/main";
 
 interface CallBack {
-    (err: Boolean, data: any);
+    (err: Boolean, data?: any);
 }
 
 class APIClient {
 
     get baseUrl () {
-
         return globalThis.config.get("api:base");
-
     }
 
     basicRequest ({ path, call }: { path: string; call: CallBack; }) {
@@ -33,7 +31,7 @@ class APIClient {
 
     }
 
-    destroySession (call) {
+    destroySession (call: CallBack): void {
         this.basicPost({
             path: "/sync.php",
             data: {destroySession: true},
@@ -43,7 +41,7 @@ class APIClient {
                 } else {
                     globalThis.config.set("api:sessionID", null)
                 }
-                call();
+                call(false);
             }
         })
     }

@@ -2,11 +2,12 @@ import * as moment from 'moment';
 import 'moment/locale/de';
 moment.locale('de');
 
-import { threePointMenuInterfaces } from "../../layout/threePointMenu.int";
+import { threePointMenuInterfaces } from "../../layout/threePointMenu";
 import { initMaterialize } from "../../layout/materialize"
 import { Tab, TabInterface } from "../tab" 
 
 import apiClient from "../../api/client"
+import { syncAll } from "../../api/sync"
 
 import settingsHtml from "./settings.html";
 import modalsHtml from "./modals.html"
@@ -81,15 +82,19 @@ class SettingsTabs extends Tab implements TabInterface {
     }
 
     syncStart () {
+
         const el:JQuery = this.element.find('[action="sync:start"]');
+
         el.attr("disabled", "true");
         el.children("i").addClass("fa-spin");
-        globalThis.sync.init(()=>{
+
+        syncAll(()=>{
             setTimeout(() => {
                 el.removeAttr("disabled");
                 el.children("i").removeClass("fa-spin");
             }, 1000);
-        })
+        });
+
     }
 
     updateConfigs () {

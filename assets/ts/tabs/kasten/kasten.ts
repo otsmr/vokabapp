@@ -1,5 +1,5 @@
 
-import { threePointMenuInterfaces }  from "../../layout/threePointMenu.int" 
+import { threePointMenuInterfaces }  from "../../layout/threePointMenu" 
 import { shuffleArray } from "../../utils/array";
 import { getDBTime } from "../../utils/utils";
 

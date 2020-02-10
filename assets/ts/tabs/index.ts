@@ -112,6 +112,17 @@ class Tabs {
 
 }
 
-export default ():object => {
-    return new Tabs().init();
-}
+globalThis.events.on("startApp", () => {
+
+    $("main").empty();
+    
+    globalThis.tabs = new Tabs().init();
+
+    const c = globalThis.config.get;
+    let openTab = ["kasten", "1"];
+    
+    if (c("general:saveOpenPage")) openTab = c("general:openPage");
+
+    globalThis.tabs.changeTab(openTab);
+
+});
