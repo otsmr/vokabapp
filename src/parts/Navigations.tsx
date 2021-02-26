@@ -1,57 +1,68 @@
 import React from 'react';
-import { useEffect, useState } from 'react'
-// import { morph } from "../../public/to_react/utils/utils"
+import { useEffect, useState, useRef } from 'react'
+import { Link } from "react-router-dom"
+import { isMobile, getClientX } from '../utils/utils';
 
-// function getClientX (event) {
-//     return event.originalEvent.touches ?  event.originalEvent.touches[0].pageX : event.clientX;
-// }
 
-export default function Navigation (props: {}) {
+export default function Navigation (props: {
+    title: string
+}) {
+
+    const menuRef: React.MutableRefObject<any> = useRef(null);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // let openNav = false;
-    // let closeNav = false;
-    // let openNavSekond = false;
-    // let closeMoveX = 0;
-
+    let openNav = false;
+    let closeNav = false;
+    let openNavSekond = false;
+    let closeMoveX = 0;
 
     useEffect(() => {
 
-        // $(document).bind('mouseup touchend', (()=>{
+        window.addEventListener("hashchange", () => {
+            setIsMenuOpen(false);
+        })
 
-        //     if (openNav) toggleNav(true);
-        //     if (closeNav) toggleNav(false);
+        window.addEventListener((isMobile()) ? 'touchend' : 'mouseup', (()=>{
+
+            if (openNav) setIsMenuOpen(true);
+            if (closeNav) setIsMenuOpen(false);
             
-        //     openNav = false;
-        //     closeNav = false;
-        //     openNavSekond = false;
+            openNav = false;
+            closeNav = false;
+            openNavSekond = false;
         
-        // }));
+        }));
         
-        // $(document).bind('touchmove mousemove', ((event:any) => {
-        //     const clientX = getClientX(event);
+        window.addEventListener((isMobile()) ? 'touchmove' : 'mousemove', ((event:any) => {
+            const clientX = getClientX(event);
         
-        //     if (openNavSekond && clientX > 20) openNav = true;
-        //     else openNav = false;
+            if (openNavSekond && clientX > 20) openNav = true;
+            else openNav = false;
         
-        //     if (closeMoveX - clientX > 30) closeNav = true;
+            if (closeMoveX - clientX > 30) closeNav = true;
         
-        // }));
+        }));
         
-        // $(document).bind('touchstart mousedown', ((event:any) => {
-        //     const clientX = getClientX(event);
+        window.addEventListener((isMobile()) ? 'touchstart' : 'mousedown', ((event:any) => {
+            const clientX = getClientX(event);
             
-        //     if (clientX <= 10) openNavSekond = true;
-        //     closeMoveX = clientX;
+            if (clientX <= 10) openNavSekond = true;
+            closeMoveX = clientX;
         
-        // }));
+        }));
 
     }, []);
 
     useEffect(() => {
 
-        // morph("nav header .morph-icon");
+        menuRef.current.classList.add("play");
+        
+        setTimeout(() => {
+            menuRef.current.classList.remove("play");
+            menuRef.current.classList.toggle("menu-1");
+            menuRef.current.classList.toggle("menu-2");
+        }, 300);
 
     }, [isMenuOpen]);
 
@@ -60,32 +71,30 @@ export default function Navigation (props: {}) {
         <nav>
             <header>
 
-                <div onClick={_ => setIsMenuOpen(!isMenuOpen)} className="morph-icon menu-1"></div>
-                <p id="menutitle">App wird geladen</p>
+                <div ref={menuRef} onClick={_ => setIsMenuOpen(!isMenuOpen)} className="morph-icon menu-1"></div>
+                <p id="menutitle">{props.title}</p>
                 
                 <div className="more">
-                    <a className='dropdown-trigger' href='#' data-target='threePointMenu'><span className="m-icon">more_vert</span></a>
+                    <a className='dropdown-trigger' href='#' data-target='threePointMenu'>
+                        <span className="m-icon">more_vert</span>
+                    </a>
                     <ul id='threePointMenu' className='dropdown-content'></ul>
                 </div>
 
             </header>
 
-            <div className="menu">
-                <p>Kasten</p>
+            <div className={"menu " + ((isMenuOpen) ? "open" : "")}>
+                <div style={{height: "50px"}}>
+                </div>
                 <ul>
-                    <li data-opentab="kasten:0">Training <span className="m-icon">library_books</span> </li>
-                    <li data-opentab="kasten:1">Neu <span className="m-icon">playlist_add</span> </li>
-                    <li data-opentab="kasten:2">1. Wdh <span className="m-icon">low_priority</span> </li>
-                    <li data-opentab="kasten:3">2. Wdh <span className="m-icon">wrap_text</span> </li>
-                    <li data-opentab="kasten:4">3. Wdh <span className="m-icon">wrap_text</span> </li>
-                    <li data-opentab="kasten:5">Aussortierung <span className="m-icon">call_split</span> </li>
-                    <li data-opentab="kasten:6">Fertig <span className="m-icon">playlist_add_check</span> </li>
+                    <li><Link to="stack"> <span className="m-icon">horizontal_split</span> Stapel</Link></li>
+                    <li><Link to="overview"> <span className="m-icon">how_to_vote</span> Kartenübersicht</Link></li>
+                    <li><Link to="statistics"> <span className="m-icon">trending_up</span> Statistik</Link></li>
                 </ul>
-                <p>Verwaltung</p>
+                <hr />
                 <ul>
-                    <li data-opentab="lists"> Listen <span className="m-icon">how_to_vote</span> </li>
-                    <li data-opentab="statistics"> Statistik <span className="m-icon">trending_up</span> </li>
-                    <li data-opentab="settings"> Einstellungen <span className="m-icon">settings_applications</span> </li>
+                    <li><Link to="settings"> <span className="m-icon">settings_applications</span>Einstellungen</Link></li>
+                    <li><Link to="help"> <span className="m-icon">help</span> Hilfe</Link></li>
                 </ul>
             </div>
         </nav>

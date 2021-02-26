@@ -4,7 +4,6 @@ nav
     background: var(--c-white)
     line-height: 55px
     box-shadow: none
-    
 
     a
         color: var(--c-black)
@@ -61,6 +60,10 @@ nav .menu
     transition: 300ms ease
     color: var(--c-black)
 
+    hr
+        border: 0
+        border-bottom: 1px solid #2F2F2F
+
     &::after
         content: ""
         height: calc(100vh - 56px)
@@ -95,19 +98,34 @@ nav .menu
         li
             float: unset
             width: 100%
-            display: flex
-            align-items: center
             font-family: $font-medium
             font-size: 20px
             color: var(--c-black)
-            padding: 0 20px 0 46px
+            padding: 0
             height: 43px
             cursor: pointer
+            display: flex
+            align-items: center
+
+            a
+                // material.sass
+                transition: unset
+                font-size: unset
+                color: unset
+                padding: unset
+                cursor: unset
+                display: flex
+                width: 100%
+                align-items: center
+
+                &:hover
+                    background: unset
 
             &:hover
                 background: var(--c-white-blue)
 
 
             span
-                flex: 1
-                text-align: right
+                min-width: 60px
+                max-width: 60px
+                text-align: center

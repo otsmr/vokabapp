@@ -47,7 +47,7 @@ function modalReset (props: {}) {
                 <h4>Einstellungen zurücksetzen?</h4>
             </div>
             <div className="modal-footer">
-                <a className="modal-close waves-effect waves-dark btn-flat" reset>Ok</a>
+                <a className="modal-close waves-effect waves-dark btn-flat">Ok</a>
                 <a className="modal-close waves-effect waves-dark btn-flat">Abbrechen</a>
             </div>
         </div>
@@ -77,7 +77,7 @@ function modalCreateSession () {
         <div className="modal" >
             <div className="modal-content">
                 <h4>Mit Odmin anmelden</h4>
-                <div className="preloader-wrapper small active" style={{display: "block", margin: "50px auto";}}>
+                <div className="preloader-wrapper small active" style={{display: "block", margin: "50px auto"}}>
                     <div className="spinner-layer spinner-primary-only">
                         <div className="circle-clipper left"> <div className="circle"></div>
                         </div><div className="gap-patch"> <div className="circle"></div>
@@ -312,7 +312,7 @@ export default function (props: {}) {
                         <td>Letzte Seite merken</td>
                         <td className="checkbox">
                         <label>
-                            <input config="general:saveOpenPage" type="checkbox" className="filled-in" checked="checked" />
+                            <input data-config="general:saveOpenPage" type="checkbox" className="filled-in" checked={true} />
                             <span></span>
                         </label>
                         </td>
@@ -321,7 +321,7 @@ export default function (props: {}) {
                         <td>Dark Mode</td>
                         <td className="checkbox">
                         <label>
-                            <input config="general:darkMode" type="checkbox" className="filled-in" checked="checked" />
+                            <input data-config="general:darkMode" type="checkbox" className="filled-in" checked={true} />
                             <span></span>
                         </label>
                         </td>
@@ -378,7 +378,7 @@ export default function (props: {}) {
                         <td>1. Erinnerung</td>
                         <td className="checkbox">
                         <label>
-                            <input onclick="updateNotificationsUI(this)" config="notification:firstEnabled" type="checkbox" className="filled-in" checked={true} />
+                            <input data-onclick="updateNotificationsUI(this)" data-config="notification:firstEnabled" type="checkbox" className="filled-in" checked={true} />
                             <span></span>
                         </label>
                         </td>
@@ -459,8 +459,8 @@ export default function (props: {}) {
                     </tr>
                     <tr>
                         <td> Account </td>
-                        <td style="flex: 3;">
-                            <a action="destroySession" className="btn waves-effect red btn-flat">Abmelden</a>
+                        <td style={{flex: 3}}>
+                            <a data-action="destroySession" className="btn waves-effect red btn-flat">Abmelden</a>
                         </td>
                     </tr>
                     <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>

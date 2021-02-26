@@ -14,9 +14,9 @@ export const groupsTable:ITable = {
     }
 }
 
-export class GroupModal {
-    groupID: number;
-    groupName:string;
+export interface GroupModal {
+    groupID: number
+    groupName: string
 }
 
 export interface GroupsModal extends Array<GroupModal>{}
@@ -40,7 +40,7 @@ export const subGroupsTable:ITable = {
     }
 }
 
-export class SubGroupModal {
+export interface SubGroupModal {
     subGroupID: number;
     subGroupName:string;
     groupID: number;
@@ -83,7 +83,7 @@ export const listsTable:ITable = {
     }
 }
 
-export class ListModal {
+export interface ListModal {
     listID: number;
     listName:string;
     author:string;
@@ -118,7 +118,7 @@ export const itemsTable:ITable = {
     }
 }
 
-export class ItemModal {
+export interface ItemModal {
     itemID: number;
     a:string;
     b:string;
@@ -155,7 +155,7 @@ export const historysTable:ITable = {
     }
 }
 
-export class HistoryModal {
+export interface HistoryModal {
     historyID:number;
     historyDBID:number;
     itemID:string;
