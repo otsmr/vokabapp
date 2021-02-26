@@ -4,7 +4,7 @@ import {
     GroupsModal,
     SubGroupsModal,
     ListsModal
-} from './../tables';
+} from '../tables';
 
 export interface CallBack {
     (err: Boolean, data: any);

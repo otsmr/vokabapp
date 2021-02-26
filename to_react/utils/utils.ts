@@ -9,7 +9,7 @@ export function getStartOfDay(date: Date = new Date()) {
     
 }
 
-export function addDays (date: Date, days) {
+export function addDays (date: Date, days: number) {
     date.setDate(date.getDate() + days);
     return date;
 }

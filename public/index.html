@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">      
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VokabApp</title>
+
+    <link rel="shortcut icon" href="img/light/logo.png" type="image/png">
+
+    <link href="./fonts/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="./fonts/roboto/roboto.css" rel="stylesheet">
+    <link href="./fonts/material/material.css" rel="stylesheet">
+
+    <script src="cordova.js"></script>
+
+    <script>
+        if (typeof globalThis === "undefined") window.globalThis = window;
+    </script>
+
+    <style>
+
+        body {
+            --path-menu-open: url(./img/light/svg/menu_open.svg);
+            --path-menu-close: url(./img/light/svg/menu_close.svg);
+            --path-logo: url(./img/light/logo.png);
+        }
+        body.dark {
+            --path-menu-open: url(./img/dark/svg/menu_open.svg);
+            --path-menu-close: url(./img/dark/svg/menu_close.svg);
+            --path-logo: url(./img/dark/logo.png);
+        }
+
+    </style>
+
+</head>
+
+<body class="dark noselect">
+
+    <div id="root"> </div>
+
+</body>
+</html>
