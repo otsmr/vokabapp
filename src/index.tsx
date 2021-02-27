@@ -27,34 +27,54 @@ import Settings from './pages/Settings';
 
 import { initMaterialize } from "./utils/materialize"
 import Statistics from './pages/Statistics';
+import events from './utils/events';
+import config from './utils/config';
+
+function getTitel () {
+    let pageID = location.hash.slice(location.hash.indexOf("/")+1);
+
+    switch (pageID) {
+        case "settings": return "Einstellungen";
+        case "statistics": return "Statistik";
+        default: return "VokabApp";
+    }
+}
 
 
 function VokabApp (props: {}) {
 
-
     const [isLoading, setIsLoading] = useState(true);
-
+    const [title, setTitel] = useState(getTitel());
 
     useEffect(() => {
+
         initMaterialize();
         setIsLoading(false);
-    }, []);
 
+        events.on("configChange", () => {
+            document.querySelector("body")?.classList[(config.get("general:darkMode")) ? "add" : "remove"]("dark");
+        })
+
+        window.addEventListener("hashchange", () => {
+            setTitel(getTitel());
+        })
+
+    }, []);
 
     return (
         <HashRouter>
 
-            <Navigation title={"App wird geladen"} />
-
-            <main>
-                {(isLoading) ? (
-                    <div className="app-loader">
-                        <div className="logo">
-                            <p className="img"></p>
-                        </div>
-                        <p className="footer">VokabApp wird geladen</p>
+            {(isLoading) ? (
+                <div className="app-loader">
+                    <div className="logo">
+                        <p className="img"></p>
                     </div>
-                ) : (
+                    <p className="footer">VokabApp wird geladen</p>
+                </div>
+            ) : (
+                <>
+                <Navigation title={title} />
+                <main>
                     <Switch>
 
                         <Route path="/settings" exact >
@@ -65,8 +85,9 @@ function VokabApp (props: {}) {
                         </Route>
 
                     </Switch>
-                )}
-            </main>
+                </main>
+                </>
+            )}
     
         </HashRouter>
     )

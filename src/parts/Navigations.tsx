@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState, useRef } from 'react'
 import { Link } from "react-router-dom"
 import { isMobile, getClientX } from '../utils/utils';
+import ExtraMenu from './ExtraMenu';
 
 
 export default function Navigation (props: {
@@ -74,12 +75,7 @@ export default function Navigation (props: {
                 <div ref={menuRef} onClick={_ => setIsMenuOpen(!isMenuOpen)} className="morph-icon menu-1"></div>
                 <p id="menutitle">{props.title}</p>
                 
-                <div className="more">
-                    <a className='dropdown-trigger' href='#' data-target='threePointMenu'>
-                        <span className="m-icon">more_vert</span>
-                    </a>
-                    <ul id='threePointMenu' className='dropdown-content'></ul>
-                </div>
+                <ExtraMenu />
 
             </header>
 

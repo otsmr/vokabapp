@@ -6,21 +6,42 @@ import { initMaterialize } from '../utils/materialize';
 import events from '../utils/events';
 moment.locale('de');
 
-import { IDefaultConfig } from "./../utils/config"
+import Modal from '../parts/Modals';
 
-// import { threePointMenuInterfaces } from "../../layout/threePointMenu";
 // import { initMaterialize } from "../../layout/materialize"
-// import { Tab, TabInterface } from "../tab" 
 
 // import apiClient from "../../api/client"
 // import { syncAll } from "../../api/sync"
 
-
-// globalThis.updateNotificationsUI = (el) => { 
-//     const $e = $(el);
-//     console.log($e.is(":checked"));
-//     $(`[display="${$e.attr("config")}"]`).css("display", ($e.is(":checked")) ? "flex" : "none")
-// };
+export const ExtraMenuSettingItems = [
+    {
+        title: "Zurücksetzen",
+        click: () => {
+            // this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
+            //     config.reset();
+            //     const oldElement = this.element;
+            //     oldElement.replaceWith(this.create());
+            //     initMaterialize();
+            //     this.updateConfigs();
+            // });
+            // this.openModal("resetSettings");
+        }
+    },
+    {
+        title: "Willkommen",
+        click: () => {
+            // introduction();
+        }
+    },
+    {
+        title: "About",
+        modal: (
+            <Modal>
+                <ModalAbout version="10.0" />
+            </Modal>
+        )
+    }
+]
 
 function ModalAbout (props: {
     version: string
@@ -30,13 +51,13 @@ function ModalAbout (props: {
         <div className="modal">
             <div className="modal-content">
                 <h4>VokabApp</h4>
-                <p style={{margin: "-10px 3px 0;"}}>by TSMR.eu</p>
+                <p style={{margin: "-10px 3px 0"}}>by TSMR.eu</p>
                 <p>
-                    <b>Version:\t\t{props.version}</b><br />
+                    <b>Version:     {props.version}</b><br />
                     Diese App ist Open-Source. Den Quellcode gibt es auf <a href="https://github.com/otsmr/vokabapp">Github</a>.<br /><br />
                     <b>Credits</b><br />
                     <a href="https://github.com/rikschennink/fitty">Fitty</a>, <a href="https://jsstore.net/">JsStore</a>, <a href="https://materializecss.com/">Materialize</a>, <a href="https://jquery.com/">JQuery</a>, <a href="https://material.io/resources/icons/?style=round">Material Icons</a>, <a href="https://fontawesome.com/icons">Font Awesome</a>, <a href="https://fonts.google.com/specimen/Roboto">Roboto</a><br />
-                    <p>Vielen Dank auch an die Entwickler von Mozilla Firefox, phpmyadmin, PHP, mysql, Linux, VSCode, Gulp, TypeScript, Sass, NodeJS und vielen mehr, die ihre Software kostenlos zur Verfügung stellen.</p>
+                    Vielen Dank auch an die Entwickler von Mozilla Firefox, phpmyadmin, PHP, mysql, Linux, VSCode, Gulp, TypeScript, Sass, NodeJS und vielen mehr, die ihre Software kostenlos zur Verfügung stellen.
                 </p>
             </div>
             <div className="modal-footer">
@@ -184,41 +205,6 @@ function createNewSession () {
 
 }
 
-function updateThreePointMenu () {
-
-    // const items:threePointMenuInterfaces = [
-    //     {
-    //         title: "Zurücksetzen",
-    //         click: () => {
-    //             this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
-    //                 config.reset();
-    //                 const oldElement = this.element;
-    //                 oldElement.replaceWith(this.create());
-    //                 initMaterialize();
-    //                 this.updateConfigs();
-    //             });
-    //             this.openModal("resetSettings");
-    //         }
-    //     },
-    //     {
-    //         title: "Willkommen",
-    //         click: () => {
-    //             introduction();
-    //         }
-    //     },
-    //     {
-    //         title: "Über die App",
-    //         click: () => {
-    //             displayModal(<ModalAbout version="10.0" />);
-    //             this.openModal("aboutPage");
-    //         }
-    //     }
-    // ]
-
-    // threePointMenu.register(`settings`, items);
-
-}
-
 export default function (props: {}) {
 
     const [lastSync, setLastSync] = useState("Noch nie");
@@ -302,6 +288,7 @@ export default function (props: {}) {
             <p className="title">Allgemein</p>
             <div className="content">
                 <table>
+                <tbody>
                     <tr>
                         <td>Letzte Seite merken</td>
                         <td className="checkbox">
@@ -320,6 +307,7 @@ export default function (props: {}) {
                         </label>
                         </td>
                     </tr>
+                </tbody>
                 </table>
             </div>
         </div>
@@ -327,6 +315,7 @@ export default function (props: {}) {
             <p className="title">Workflow</p>
             <div className="content">
                 <table>
+                    <tbody>
                     <tr>
                         <td>Richtung</td>
                         <td>
@@ -361,6 +350,7 @@ export default function (props: {}) {
                             </select>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -368,6 +358,7 @@ export default function (props: {}) {
             <p className="title">Benachrichtigung</p>
             <div className="content">
                 <table>
+                <tbody>
                     <tr>
                         <td>1. Erinnerung</td>
                         <td className="checkbox">
@@ -394,7 +385,7 @@ export default function (props: {}) {
                             </td>
                         </tr>
                         {(configNotification.secondEnabled) ? (
-                            <tr data-display="notification:secondEnabled" >
+                            <tr >
                                 <td className="timepicker-td">
                                     <input data-unfocus="true" value={configNotification.secondTime} onChange={e => uc("configNotification.secondTime", e.currentTarget.value)} placeholder="Zeit wählen" type="text" className="timepicker" />
                                 </td>
@@ -402,6 +393,7 @@ export default function (props: {}) {
                         ) : null}
                         </>
                     ) : null}
+                </tbody>
                 </table>
             </div>
         </div>
@@ -409,6 +401,7 @@ export default function (props: {}) {
             <p className="title">Synchronisation</p>
             <div className="content">
                 <table>
+                <tbody>
                     <tr>
                         <td> API-Server </td>
                         <td style={{flex: 3}}>
@@ -416,6 +409,7 @@ export default function (props: {}) {
                         </td>
                     </tr>
                     <tr> <td> <a href="https://github.com/otsmr/vokabapp-server">Quellcode vom Server</a> </td> </tr>
+                </tbody>
                 </table>
             </div><br />
 
@@ -423,6 +417,7 @@ export default function (props: {}) {
 
                 <div className="content" style={{display: "none"}}>
                 <table>
+                <tbody>
                     <tr>
                         <td>
                             Letzter Sync: <b>{lastSync}</b>
@@ -452,12 +447,14 @@ export default function (props: {}) {
                         </td>
                     </tr>
                     <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>
+                </tbody>
                 </table>
                 </div>
 
             ) : (
                 <div className="content">
                     <table>
+                    <tbody>
                         <tr><td>
                             Speichern des Fortschritts.<br />
                             Daten über mehrere Geräte hinweg synchronisieren.
@@ -469,6 +466,7 @@ export default function (props: {}) {
                             </td>
                         </tr>
                         <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>
+                    </tbody>
                     </table>
                 </div>
             )}
