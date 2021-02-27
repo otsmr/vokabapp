@@ -1,6 +1,12 @@
-import * as moment from 'moment';
+import React, { useCallback, useEffect, useState } from 'react';
+import moment from 'moment';
 import 'moment/locale/de';
+import config, { ICWorkflow, ICGeneral, ICNotification } from '../utils/config';
+import { initMaterialize } from '../utils/materialize';
+import events from '../utils/events';
 moment.locale('de');
+
+import { IDefaultConfig } from "./../utils/config"
 
 // import { threePointMenuInterfaces } from "../../layout/threePointMenu";
 // import { initMaterialize } from "../../layout/materialize"
@@ -16,7 +22,9 @@ moment.locale('de');
 //     $(`[display="${$e.attr("config")}"]`).css("display", ($e.is(":checked")) ? "flex" : "none")
 // };
 
-function modalAbout (props: {}) {
+function ModalAbout (props: {
+    version: string
+}) {
 
     return (
         <div className="modal">
@@ -24,7 +32,7 @@ function modalAbout (props: {}) {
                 <h4>VokabApp</h4>
                 <p style={{margin: "-10px 3px 0;"}}>by TSMR.eu</p>
                 <p>
-                    <b>Version:\t\t#VERSION#</b><br />
+                    <b>Version:\t\t{props.version}</b><br />
                     Diese App ist Open-Source. Den Quellcode gibt es auf <a href="https://github.com/otsmr/vokabapp">Github</a>.<br /><br />
                     <b>Credits</b><br />
                     <a href="https://github.com/rikschennink/fitty">Fitty</a>, <a href="https://jsstore.net/">JsStore</a>, <a href="https://materializecss.com/">Materialize</a>, <a href="https://jquery.com/">JQuery</a>, <a href="https://material.io/resources/icons/?style=round">Material Icons</a>, <a href="https://fontawesome.com/icons">Font Awesome</a>, <a href="https://fonts.google.com/specimen/Roboto">Roboto</a><br />
@@ -39,7 +47,7 @@ function modalAbout (props: {}) {
 
 }
 
-function modalReset (props: {}) {
+function ModalReset (props: {}) {
 
     return (
         <div className="modal">
@@ -55,7 +63,7 @@ function modalReset (props: {}) {
 
 }
 
-function modalRemoveSession () {
+function ModalRemoveSession () {
     
     return (
         <div className="modal">
@@ -71,7 +79,7 @@ function modalRemoveSession () {
 
 }
 
-function modalCreateSession () {
+function ModalCreateSession () {
 
     return (
         <div className="modal" >
@@ -94,23 +102,7 @@ function modalCreateSession () {
 
 } 
 
-
-// class SettingsTabs extends Tab implements TabInterface {
-
-//     constructor () {
-//         super();
-//         this.initThreePointMenu();
-//     }
-
 //     create () {
-
-//         globalThis.events.on("afterConfigSync", (changes) => {
-//             if (changes) this.updateConfigs();
-//             else this.setLastSync();
-//         })
-
-//         this.element = $(settingsHtml);
-//         this.modals = $(modalsHtml.replace("#VERSION#", globalThis.VERSION)).appendTo("main");
 
 //         this.element.find("[config]").on("change", ((event)=>{
 //             const element:any = $(event.currentTarget);
@@ -129,59 +121,132 @@ function modalCreateSession () {
 //             globalThis.config.set(element.attr("config"), val);
 //         }));
 
-//         this.element.find("[action]").click((event)=>{
-//             const element:JQuery = $(event.currentTarget);
-//             const action:string = element.attr("action");
-
-//             if (action === "createNewSession") {
-//                 this.createNewSession(element);
-//             }
-//             if (action === "destroySession") {
-//                 this.modals.find("[destroySession] [ok]").off("click").click(()=>{
+        
+function destroySession () {
+// this.modals.find("[destroySession] [ok]").off("click").click(()=>{
 //                     apiClient.destroySession(()=>{
 //                         this.closeModal("destroySession");
 //                         this.updateConfigs();
 //                     })
 //                 });
 //                 this.openModal("destroySession");
-//             }
-//             if (action === "sync:start") {
-//                 this.syncStart();
-//             }
+}
 
-//         });
-        
-//         this.updateConfigs();
-//         return this.element;
+function syncStart () {
 
-//     }
+    // const el:JQuery = this.element.find('[action="sync:start"]');
 
-//     syncStart () {
+    // el.attr("disabled", "true");
+    // el.children("i").addclassName("fa-spin");
 
-//         const el:JQuery = this.element.find('[action="sync:start"]');
+    // syncAll(()=>{
+    //     setTimeout(() => {
+    //         el.removeAttr("disabled");
+    //         el.children("i").removeclassName("fa-spin");
+    //     }, 1000);
+    // });
 
-//         el.attr("disabled", "true");
-//         el.children("i").addclassName("fa-spin");
+}
 
-//         syncAll(()=>{
-//             setTimeout(() => {
-//                 el.removeAttr("disabled");
-//                 el.children("i").removeclassName("fa-spin");
-//             }, 1000);
-//         });
+function createNewSession () {
 
-//     }
+    // element.attr('disabled', "true");
+            
+    // displayModal(<ModalCreateSession />);
+    
+    // apiClient.createNewSession((err, json)=>{
+    //     if (err) {
+    //         this.closeModal("createNewSession");
+    //         element.removeAttr('disabled');
+    //         alert("Die Verbindung ist fehlgeschlagen.");
+    //         return;
+    //     }
+    //     const {siginPath, sessionID} = json;
+    //     globalThis.config.set("api:sessionID", sessionID);
+    //     localStorage.setItem("lastUpdate", null);
 
-//     updateConfigs () {
+    //     window.open(siginPath);
 
-//         const sessionID:string = globalThis.config.get("api:sessionID");
-//         if (sessionID) {
-//             this.element.find('[notConnected]').fadeOut(0);
-//             this.element.find('[connected]').fadeIn(0);
-//         } else {
-//             this.element.find('[notConnected]').fadeIn(0);
-//             this.element.find('[connected]').fadeOut(0);
-//         }
+    //     const int = setInterval(() => {
+    //         apiClient.checkSessionID((err: Boolean, valid: Boolean)=>{
+    //             if (err || !valid) return;
+    //             clearInterval(int);
+    //             this.openModal("createNewSession");
+    //             this.modals.find("[createNewSession] .preloader-wrapper").remove();
+    //             this.modals.find("[createNewSession] h4").after(`<p>Erfolgreich verbunden.</p>`);
+    //             this.updateConfigs();
+    //             this.syncStart();
+    //             element.removeAttr('disabled');
+    //         })
+    //     }, 5000);
+
+    // })
+
+}
+
+function updateThreePointMenu () {
+
+    // const items:threePointMenuInterfaces = [
+    //     {
+    //         title: "Zurücksetzen",
+    //         click: () => {
+    //             this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
+    //                 config.reset();
+    //                 const oldElement = this.element;
+    //                 oldElement.replaceWith(this.create());
+    //                 initMaterialize();
+    //                 this.updateConfigs();
+    //             });
+    //             this.openModal("resetSettings");
+    //         }
+    //     },
+    //     {
+    //         title: "Willkommen",
+    //         click: () => {
+    //             introduction();
+    //         }
+    //     },
+    //     {
+    //         title: "Über die App",
+    //         click: () => {
+    //             displayModal(<ModalAbout version="10.0" />);
+    //             this.openModal("aboutPage");
+    //         }
+    //     }
+    // ]
+
+    // threePointMenu.register(`settings`, items);
+
+}
+
+export default function (props: {}) {
+
+    const [lastSync, setLastSync] = useState("Noch nie");
+
+    
+    let _w: ICWorkflow = config.get("workflow");
+    const [configWorkflow, setConfigWorkflow] = useState(_w);
+    let _g: ICGeneral = config.get("general");
+    const [configGeneral, setConfigGeneral] = useState(_g);
+    let _n: ICNotification = config.get("notification");
+    const [configNotification, setConfigNotification] = useState(_n);
+    const [configApiBase, setConfigApiBase] = useState(config.get("api:base"));
+    const [configSyncTrigger, setConfigSyncTrigger] = useState(config.get("sync:trigger"));
+
+    function updateLastSync () {
+
+        let lastSyncTimestamp = config.get("api:lastSync");
+        setLastSync((lastSyncTimestamp) ? moment(new Date(lastSyncTimestamp)).fromNow() : "Noch nie");
+
+    }
+
+    function updateConfigs () {
+
+        setConfigWorkflow(config.get("workflow"));
+        setConfigGeneral(config.get("general"));
+        setConfigNotification(config.get("notification"));
+        setConfigApiBase(config.get("api:base"));
+        setConfigSyncTrigger(config.get("sync:trigger"));
 
 //         this.element.find("[config]").each((i, el)=>{
 //             const element:any = $(el);
@@ -197,110 +262,39 @@ function modalCreateSession () {
 //             }
 
 //         });
-
         
-//         initMaterialize();
+        initMaterialize();
 
 //         setTimeout(() => {
 //             globalThis.updateNotificationsUI($(`[config="notification:firstEnabled"]`));
 //             globalThis.updateNotificationsUI($(`[config="notification:secondEnabled"]`));
 //         }, 50);
 
-//         this.setLastSync();
+        updateLastSync();
+
+    }
+
+    function uc (configID: string, value: any) {
+
+        console.log(configID);
         
-//     }
-    
-//     setLastSync () {
-//         let lastSync = globalThis.config.get("api:lastSync");
-//         if (!lastSync) lastSync = "Noch nie";
-//         else lastSync = moment(new Date(lastSync)).fromNow();
-//         this.element.find("[lastSync]").text(lastSync);
-//     }
+        config.set(configID, value);
+        updateConfigs();
 
-//     createNewSession (element: JQuery) {
+    }
 
-//         element.attr('disabled', "true");
-                
-//         this.openModal("createNewSession");
+
+    useEffect(() => {
         
-//         apiClient.createNewSession((err, json)=>{
-//             if (err) {
-//                 this.closeModal("createNewSession");
-//                 element.removeAttr('disabled');
-//                 alert("Die Verbindung ist fehlgeschlagen.");
-//                 return;
-//             }
-//             const {siginPath, sessionID} = json;
-//             globalThis.config.set("api:sessionID", sessionID);
-//             localStorage.setItem("lastUpdate", null);
+        updateLastSync();
+        updateConfigs();
 
-//             window.open(siginPath);
+        events.on("afterConfigSync", (changes: any) => {
+            if (changes) updateConfigs();
+            else updateLastSync();
+        })
 
-//             const int = setInterval(() => {
-//                 apiClient.checkSessionID((err: Boolean, valid: Boolean)=>{
-//                     if (err || !valid) return;
-//                     clearInterval(int);
-//                     this.openModal("createNewSession");
-//                     this.modals.find("[createNewSession] .preloader-wrapper").remove();
-//                     this.modals.find("[createNewSession] h4").after(`<p>Erfolgreich verbunden.</p>`);
-//                     this.updateConfigs();
-//                     this.syncStart();
-//                     element.removeAttr('disabled');
-//                 })
-//             }, 5000);
-
-//         })
-//     }
-
-//     initThreePointMenu () {
-
-//         const items:threePointMenuInterfaces = [
-//             {
-//                 title: "Zurücksetzen",
-//                 click: () => {
-//                     this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
-//                         globalThis.config.reset();
-//                         const oldElement = this.element;
-//                         oldElement.replaceWith(this.create());
-//                         initMaterialize();
-//                         this.updateConfigs();
-//                     });
-//                     this.openModal("resetSettings");
-//                 }
-//             },
-//             {
-//                 title: "Willkommen",
-//                 click: () => {
-//                     introduction();
-//                 }
-//             },
-//             {
-//                 title: "Über die App",
-//                 click: () => {
-//                     this.openModal("aboutPage");
-//                 }
-//             }
-//         ]
-
-//         globalThis.threePointMenu.register(`settings`, items);
-
-//     }
-
-//     focus () {
-
-//         globalThis.tabs.setTitle("Einstellungen");
-
-//         this.updateConfigs();
-
-//     }
-
-//     blur () {
-
-//     }
-
-// }
-
-export default function (props: {}) {
+    }, [])
 
     return (
         <>
@@ -312,7 +306,7 @@ export default function (props: {}) {
                         <td>Letzte Seite merken</td>
                         <td className="checkbox">
                         <label>
-                            <input data-config="general:saveOpenPage" type="checkbox" className="filled-in" checked={true} />
+                            <input onChange={e => uc("general:saveOpenPage", e.currentTarget.checked)} type="checkbox" className="filled-in" checked={configGeneral.saveOpenPage} />
                             <span></span>
                         </label>
                         </td>
@@ -321,7 +315,7 @@ export default function (props: {}) {
                         <td>Dark Mode</td>
                         <td className="checkbox">
                         <label>
-                            <input data-config="general:darkMode" type="checkbox" className="filled-in" checked={true} />
+                            <input onChange={e => uc("general:darkMode", e.currentTarget.checked)} type="checkbox" className="filled-in" checked={configGeneral.darkMode} />
                             <span></span>
                         </label>
                         </td>
@@ -336,7 +330,7 @@ export default function (props: {}) {
                     <tr>
                         <td>Richtung</td>
                         <td>
-                            <select data-config="workflow:direction">
+                            <select value={configWorkflow.direction} onChange={e => uc("workflow:direction", e.currentTarget.value)}>
                                 <option value="a>b">A&rarr;B</option>
                                 <option value="b>a">B&rarr;A</option>
                                 <option value="a<>b">A&#8697&#65038;B</option>
@@ -346,7 +340,7 @@ export default function (props: {}) {
                     <tr>
                         <td>Durchsatz/Tag</td>
                         <td>
-                            <select data-config="workflow:dailyThroughput">
+                            <select value={configWorkflow.dailyThroughput} onChange={e => uc("workflow:dailyThroughput", e.currentTarget.value)}>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>
@@ -357,7 +351,7 @@ export default function (props: {}) {
                     <tr>
                         <td>Nicht gewusst<br /> nach X-Versuchen</td>
                         <td>
-                            <select data-config="workflow:notKnownFromXAttempts">
+                            <select value={configWorkflow.notKnownFromXAttempts} onChange={e => uc("workflow:notKnownFromXAttempts", e.currentTarget.value)} >
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -378,30 +372,36 @@ export default function (props: {}) {
                         <td>1. Erinnerung</td>
                         <td className="checkbox">
                         <label>
-                            <input data-onclick="updateNotificationsUI(this)" data-config="notification:firstEnabled" type="checkbox" className="filled-in" checked={true} />
+                            <input onChange={e => uc("notification:firstEnabled", e.currentTarget.checked)} type="checkbox" className="filled-in" checked={configNotification.firstEnabled} />
                             <span></span>
                         </label>
                         </td>
                     </tr>
-                    <tr data-display="notification:firstEnabled" >
-                        <td className="timepicker-td">
-                            <input data-unfocus="true" data-config="notification:firstTime" placeholder="Zeit wählen" type="text" className="timepicker" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2. Erinnerung</td>
-                        <td className="checkbox">
-                        <label>
-                            <input data-onclick="updateNotificationsUI(this)" data-config="notification:secondEnabled" type="checkbox" className="filled-in" checked={true} />
-                            <span></span>
-                        </label>
-                        </td>
-                    </tr>
-                    <tr data-display="notification:secondEnabled" >
-                        <td className="timepicker-td">
-                            <input data-unfocus="true" data-config="notification:secondTime" placeholder="Zeit wählen" type="text" className="timepicker" />
-                        </td>
-                    </tr>
+                    {(configNotification.firstEnabled) ? (
+                        <>
+                        <tr>
+                            <td className="timepicker-td">
+                                <input data-unfocus="true" value={configNotification.firstTime} onChange={e => uc("configNotification.firstTime", e.currentTarget.value)} placeholder="Zeit wählen" type="text" className="timepicker" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2. Erinnerung</td>
+                            <td className="checkbox">
+                            <label>
+                                <input onChange={e => uc("notification:secondEnabled", e.currentTarget.checked)} type="checkbox" className="filled-in" checked={configNotification.secondEnabled} />
+                                <span></span>
+                            </label>
+                            </td>
+                        </tr>
+                        {(configNotification.secondEnabled) ? (
+                            <tr data-display="notification:secondEnabled" >
+                                <td className="timepicker-td">
+                                    <input data-unfocus="true" value={configNotification.secondTime} onChange={e => uc("configNotification.secondTime", e.currentTarget.value)} placeholder="Zeit wählen" type="text" className="timepicker" />
+                                </td>
+                            </tr>
+                        ) : null}
+                        </>
+                    ) : null}
                 </table>
             </div>
         </div>
@@ -412,39 +412,27 @@ export default function (props: {}) {
                     <tr>
                         <td> API-Server </td>
                         <td style={{flex: 3}}>
-                            <input data-config="api:base" type="text" placeholder="https://" />
+                            <input value={configApiBase} onChange={e => uc("api:base", e.currentTarget.value)} type="text" placeholder="https://" />
                         </td>
                     </tr>
                     <tr> <td> <a href="https://github.com/otsmr/vokabapp-server">Quellcode vom Server</a> </td> </tr>
                 </table>
             </div><br />
-            <div className="content">
-                <table>
-                    <tr><td>
-                        Speichern des Fortschritts.<br />
-                        Daten über mehrere Geräte hinweg synchronisieren.
-                    </td></tr>
-                    <tr>
-                        <td> Account </td>
-                        <td style={{flex: 3}}>
-                            <a data-action="createNewSession" className="btn waves-effect btn-flat">Anmelden</a>
-                        </td>
-                    </tr>
-                    <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>
-                </table>
-            </div>
-            <div className="content" style={{display: "none"}}>
+
+            {(config.get("api:sessionID")) ? (
+
+                <div className="content" style={{display: "none"}}>
                 <table>
                     <tr>
                         <td>
-                            Letzter Sync: <b>{"lastSync"}</b>
+                            Letzter Sync: <b>{lastSync}</b>
                         </td>
                     </tr>
                     <tr>
                         <td>Sync-Auslöser</td>
                         <td style={{flex: 2}}>
-                            <select data-config="sync:trigger">
-                                <option value="startup" selected>App-Start</option>
+                            <select value={configSyncTrigger} onChange={e => uc("sync:trigger", e.currentTarget.value)}>
+                                <option value="startup">App-Start</option>
                                 <option value="change">Änderung</option>
                                 <option value="always">Start + Änderung</option>
                                 <option value="manuell">Manuell</option>
@@ -454,18 +442,37 @@ export default function (props: {}) {
                     <tr>
                         <td> Manuell starten </td>
                         <td>
-                            <a data-action="sync:start" className="waves-effect btn btn-flat"><i className="m-icon"> refresh </i></a>
+                            <a onClick={syncStart} className="waves-effect btn btn-flat"><i className="m-icon"> refresh </i></a>
                         </td>
                     </tr>
                     <tr>
                         <td> Account </td>
                         <td style={{flex: 3}}>
-                            <a data-action="destroySession" className="btn waves-effect red btn-flat">Abmelden</a>
+                            <a onClick={destroySession} className="btn waves-effect red btn-flat">Abmelden</a>
                         </td>
                     </tr>
                     <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>
                 </table>
-            </div>
+                </div>
+
+            ) : (
+                <div className="content">
+                    <table>
+                        <tr><td>
+                            Speichern des Fortschritts.<br />
+                            Daten über mehrere Geräte hinweg synchronisieren.
+                        </td></tr>
+                        <tr>
+                            <td> Account </td>
+                            <td style={{flex: 3}}>
+                                <a onClick={createNewSession} className="btn waves-effect btn-flat">Anmelden</a>
+                            </td>
+                        </tr>
+                        <tr> <td> <a href="https://oproj.de/privacy?inline=true">Datenschutzerklärung</a> </td> </tr>
+                    </table>
+                </div>
+            )}
+            
         </div>
         <br /><br />
         </>

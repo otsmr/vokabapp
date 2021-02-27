@@ -1,5 +1,3 @@
-"use strict";
-
 import { randomInt } from "./utils";
 
 const trigger:any = {};
@@ -57,8 +55,8 @@ events.historyChange = () => {
 events.startApp = () => {
     triggers("startApp");
 }
-events.error = (type, err) => {
+events.error = (type: string, err: any) => {
     triggers("error", type, err);
 }
 
-globalThis.events = events;
+export default events;
