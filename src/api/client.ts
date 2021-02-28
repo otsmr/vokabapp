@@ -1,15 +1,78 @@
 import React from 'react';
-// import { randomInt } from "../utils/utils";
+import { randomInt } from "../utils/utils";
 // import { dbService } from "../database/service/main";
+import config from '../utils/config';
+import events from '../utils/events';
 
-// interface CallBack {
-//     (err: Boolean, data?: any): void;
-// }
+interface CallBack {
+    (err: Boolean, data?: any): void;
+}
+
+function post (path: string, body: any, call: CallBack) {
+    
+    body.sessionID = config.get("api:sessionID");
+
+    var form_data = new FormData();
+
+    for ( var key in body ) {
+        form_data.append(key, body[key]);
+    }
+
+    fetch(config.get("api:base") + path, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            // 'Content-Type': 'application/json'
+        },
+        body: form_data
+    })
+    .then(e => e.json())
+    .then(data => {
+        call(false, data);
+    })
+    .catch(err => {
+        call(true, "Die Verbindung ist fehlgeschlagen.");
+    });
+
+
+}
+
+export function downloadLists (listIDs: number[], call: CallBack) {
+    
+    post("/getlist.php", {
+        getListsByIDs: listIDs
+    }, (err, message) => {
+        if (err) {
+            return call(true, message);
+        }
+        console.log(message);
+        // dbService.importItems(message.items, ()=>{
+        //     call(false, listIDs);
+        // })
+    })
+
+}
+
+export function getMetaData (call: CallBack) {
+
+    post("getlist.php", {getMetaData: true}, (err, data) => {
+        if (err) {
+            events.error("API", "Fehler beim Herunterladen der Liste.");
+            return call(true);
+        }
+        call(false, data);
+    })
+
+}
+
+export function getListInfos () {
+
+}
 
 // class APIClient {
 
 //     get baseUrl () {
-//         return globalThis.config.get("api:base");
+//         return globalThis.;
 //     }
 
 //     basicRequest ({ path, call }: { path: string; call: CallBack; }) {
@@ -18,18 +81,6 @@ import React from 'react';
 //         }).fail(() => {
 //             call(true, "Informationen konnten nicht geladen werden.")
 //         });
-//     }
-
-//     basicPost ({ path, data = {}, call }: { path: string; data:any; call: CallBack; }) {
-
-//         data.sessionID = globalThis.config.get("api:sessionID");
-
-//         $.post(this.baseUrl + path, data, (res) => {
-//             call(false, res);
-//         }).fail(() => {
-//             call(true, "Die Verbindung ist fehlgeschlagen.");
-//         });
-
 //     }
 
 //     destroySession (call: CallBack): void {
@@ -69,32 +120,6 @@ import React from 'react';
 //             }
 //         });
 
-//     }
-
-//     downloadLists (listIDs: number[], call: CallBack) {
-
-//         this.basicPost({
-//             path: "/getlist.php",
-//             data: {getListsByIDs: listIDs},
-//             call: (err, message) => {
-//                 if (err) {
-//                     return call(true, message);
-//                 }
-//                 console.log(message);
-//                 dbService.importItems(message.items, ()=>{
-//                     call(false, listIDs);
-//                 })
-//             }
-//         })
-
-//     }
-
-//     getJSONListInfo (call: CallBack) {
-//         this.basicRequest({ path: "data/info.json", call });
-//     }
-
-//     getJSONList (path:string, call: CallBack) {
-//         this.basicRequest({ path, call });
 //     }
 
 // }

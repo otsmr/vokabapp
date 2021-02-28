@@ -1,4 +1,6 @@
 import React from 'react';
+import { getMetaData } from './client';
+import { dbService } from '../database/service/main';
 // import apiClient from "./client";
 // import { dbService } from "./../database/service/main";
 // import dbHistory from "./../database/service/history";
@@ -41,22 +43,30 @@ import React from 'react';
 
 // }
 
-// export const syncMetaData = (done: {(err: boolean)} = () => {}):void => {
+export function syncMetaData (done: {(err: boolean): void} = () => {}) {
 
-//     apiClient.basicPost({
-//         path: "getlist.php",
-//         data: {getMetaData: true},
-//         call: async (err: boolean, response:any) => {
-//             if (err) {
-//                 globalThis.events.error("API", "Fehler beim Herunterladen der Liste.");
-//                 return done(true);
-//             }
-//             await dbService.importMetadata(response);
-//             done(false);
-//         }
-//     })
+    getMetaData(async (err, data) => {
 
-// }
+        try {
+            
+            if (!err) {
+
+                console.log(data);
+
+                await dbService.importMetadata(data);
+
+                return done(true);
+            }
+            
+        } catch (error) {
+            console.log("syncMetaData", error);
+        }
+        
+        done(false);
+
+    });
+
+}
 
 // const checkSyncTigger = (type:string):void => {
 

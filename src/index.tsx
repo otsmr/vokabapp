@@ -26,9 +26,11 @@ import Navigation from "./parts/Navigations"
 import Settings from './pages/Settings';
 
 import { initMaterialize } from "./utils/materialize"
+import initDatabase from "./database/init"
 import Statistics from './pages/Statistics';
 import events from './utils/events';
 import config from './utils/config';
+import Overview from './pages/Overview';
 
 function getTitel () {
     let pageID = location.hash.slice(location.hash.indexOf("/")+1);
@@ -36,6 +38,7 @@ function getTitel () {
     switch (pageID) {
         case "settings": return "Einstellungen";
         case "statistics": return "Statistik";
+        case "overview": return "Kartenübersicht";
         default: return "VokabApp";
     }
 }
@@ -48,6 +51,7 @@ function VokabApp (props: {}) {
 
     useEffect(() => {
 
+        initDatabase();
         initMaterialize();
         setIsLoading(false);
 
@@ -82,6 +86,9 @@ function VokabApp (props: {}) {
                         </Route>
                         <Route path="/statistics" exact >
                             <Statistics />
+                        </Route>
+                        <Route path="/overview" exact >
+                            <Overview />
                         </Route>
 
                     </Switch>

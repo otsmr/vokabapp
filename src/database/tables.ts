@@ -15,7 +15,7 @@ export const groupsTable:ITable = {
 }
 
 export interface GroupModal {
-    groupID: number
+    groupID: number,
     groupName: string
 }
 
