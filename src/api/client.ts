@@ -3,6 +3,7 @@ import { randomInt } from "../utils/utils";
 // import { dbService } from "../database/service/main";
 import config from '../utils/config';
 import events from '../utils/events';
+import { dbService } from '../database/service/main';
 
 interface CallBack {
     (err: Boolean, data?: any): void;
@@ -40,15 +41,15 @@ function post (path: string, body: any, call: CallBack) {
 export function downloadLists (listIDs: number[], call: CallBack) {
     
     post("/getlist.php", {
-        getListsByIDs: listIDs
+        getListsByIDs: JSON.stringify(listIDs)
     }, (err, message) => {
         if (err) {
             return call(true, message);
         }
         console.log(message);
-        // dbService.importItems(message.items, ()=>{
-        //     call(false, listIDs);
-        // })
+        dbService.importItems(message.items, ()=>{
+            call(false, listIDs);
+        })
     })
 
 }

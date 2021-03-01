@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, cloneElement } from 'react';
 
 import { initMaterialize } from "../utils/materialize";
-// import { dbService } from "../../database/service/main";
 import { syncMetaData } from "../api/sync";
 
 
 import { sortArray } from "../utils/array";
 import Loader from "../components/Loader";
+import { dbService } from '../database/service/main';
+
+import Modal from '../parts/Modals';
+import events from '../utils/events';
+import { downloadLists } from '../api/client';
 
 function ModalSaveChanges (props: {}) {
 
@@ -27,247 +31,172 @@ function ModalSaveChanges (props: {}) {
 export default function (props: {}) {
 
 
+    let _i: any[] = [];
+    const [sortGroups, setSortGroups] = useState(_i);
+    const [sortSubGroups, setSortSubGroups] = useState(_i);
+    const [sortItems, setSortItems] = useState(_i);
+    const [selectedItems, setSelectedItems] = useState(_i);
+    const [modal, setModal] = useState(<div></div>);
+
+    function setLists () {
+
+        dbService.getListsByGroups((err, items)=>{
+            if (err) return M.toast({html: `Fehler: ${items}`});
+            
+            items = items.map((e: { offline: any; }) => {
+                return {...e, offlineBefore: e.offline}
+            });
+
+            setSortGroups(sortArray(items, "groupName").filter((element, index, self) => 
+                self.findIndex(t => t.groupID === element.groupID) === index
+            ));
+            setSortSubGroups(sortArray(items, "subGroupName").filter((element, index, self) => 
+                self.findIndex(t => t.subGroupID === element.subGroupID) === index
+            ));
+            setSortItems(sortArray(items, "listName").filter((element, index, self) => 
+                self.findIndex(t => t.listID === element.listID) === index
+            ));
+
+            setSelectedItems(items.filter((item: any) => item.offline));
+
+            initMaterialize();
+
+        })
+    }
+
+    function getChangesStats () {
+        return {
+            download: sortItems.filter(e => !e.offline && selectedItems.find(f => f.listID === e.listID)),
+            delete: sortItems.filter(e => e.offline && !selectedItems.find(f => f.listID === e.listID))
+        }
+    }
+
     useEffect(() => {
 
-        // dbService.getListsByGroups((err, items)=>{
-        //     if (err) return globalThis.M.toast({html: `Fehler: ${items}`});
+        setLists();
         
-        //     items = items.map(e => {return {...e, offlineBefore: e.offline}});
-        //     call(items);
-        // })
-
-        if (navigator.onLine) {
-            syncMetaData(()=>{
-                // this.createList();
-            });
-        } else {
-            // this.createList();
-        }
-
+        if (navigator.onLine)
+            syncMetaData(setLists);
+        
     }, []);
 
 
     function saveChanges () {
-        // let count = 0;
-        // const done = () => {
-        //     count++;
-        //     if (count >= 2) {
-        //         this.getList((items)=> {
-        //             setTimeout(() => {
-        //                 this.closeModal("saveChanges");
-        //             }, 500);
-        //             this.listItems.updateList(items);
-        //             this.updateCounters();
-        //             globalThis.events.listChanged();
-        //             this.setTitle();
-        //         })
-        //     }
-        // }
-        // this.openModal("saveChanges", {dismissible:false});
 
-        // const changes = this.listItems.changes();
-        // changes.add = changes.add.map(e => e.listID);
-        // changes.remove = changes.remove.map(e => e.listID);
+        let timeout = setTimeout(() => {
+            setModal(
+                <Modal>
+                    <ModalSaveChanges />
+                </Modal>
+            );
+        }, 500);
+        let count = 0;
+        const done = () => {
+            count++;
+            if (count >= 2) {
+                if (timeout) clearTimeout(timeout);
+                setLists();
+                setModal(<div></div>);
+                events.listChanged();
+            }
+        }
 
-        // if (changes.add.length === 0) done();
-        // else apiClient.downloadLists(changes.add, (err)=>{
-        //     if (err) globalThis.M.toast({html: "Listen konnten nicht heruntergeladen werden."})
-        //     done();
-        // })
-        // if (changes.remove.length === 0) done();
-        // else dbService.removeLists(changes.remove, ()=>{
-        //     done();
-        // });
+        let addListIDs = getChangesStats().download.map(e => e.listID)
+        let removeListIDs = getChangesStats().delete.map(e => e.listID)
+
+        if (addListIDs.length === 0) done();
+        else downloadLists(addListIDs, (err)=>{
+            if (err) globalThis.M.toast({html: "Listen konnten nicht heruntergeladen werden."})
+            done();
+        })
+        if (removeListIDs.length === 0) done();
+        else dbService.removeLists(removeListIDs, ()=>{
+            done();
+        });
     }
+
+    const downloadCount = getChangesStats().download.length;
+    const deleteCount = getChangesStats().delete.length;
 
     return (
 
         <>
 
+        {modal}
+
         <div className="status-anzeige">
             <div>
-                <span className="green-text"><span>0</span> Herunterladen</span><br />
-                <span className="red-text"><span>0</span> Löschen</span>
+                <span className="green-text">
+                    {downloadCount} Herunterladen
+                </span><br />
+                <span className="red-text">
+                    {deleteCount} Löschen
+                </span>
             </div>
-            <div> <a onClick={saveChanges} className="btn btn-flat waves-effect"><i className="m-icon">save</i></a> </div>
+            <div>
+                {(downloadCount !== 0 || deleteCount !== 0) ? (
+                    <a onClick={saveChanges} className="btn btn-flat waves-effect"><i className="m-icon">save</i></a>
+                ) : null}
+            </div>
         </div>
+
+        <ul className="collapsible list-collaps">
+
+            {sortGroups.map(sortGroup => (
+                <li key={sortGroup.groupID}>
+                    <div className="collapsible-header">
+                        <span className="downCounter">{selectedItems.filter(e => e.groupID === sortGroup.groupID).length}</span> 
+                        <p>{sortGroup.groupName}</p>
+                    </div>
+                    <div className="collapsible-body">
+                        <ul className="collapsible list-collaps subGroups">
+                            {sortSubGroups.filter(e => e.groupID === sortGroup.groupID).map(sortSubGroup => (
+                                <li key={sortSubGroup.subGroupID}>
+                                    <div className="collapsible-header">
+                                        <span className="downCounter">{selectedItems.filter(e => e.subGroupID === sortSubGroup.subGroupID).length}</span>
+                                        <p>{sortSubGroup.subGroupName}</p>
+                                    </div>
+                                    <div className="collapsible-body">
+                                        <ul className="collapsible list-collaps lists">
+                                            {sortItems.filter(e => e.subGroupID === sortSubGroup.subGroupID).map(sortItem => (
+                                                <label className="select-list" html-for={"listid" + sortItem.listID} key={sortItem.listID}>
+                                                    <div>
+                                                        <p>{sortItem.listName}</p>
+                                                        <span>{sortItem.aTitel} &lt;-&gt; {sortItem.bTitel}</span>
+                                                    </div>
+                                                    <div style={{margin: "0 0 0 auto"}}>
+                                                        <label>
+                                                            <input
+                                                                type="checkbox"
+                                                                className="filled-in"
+                                                                id={"listid" + sortItem.listID}
+                                                                checked={(selectedItems.find(e => e.listID === sortItem.listID)) ? true : false} 
+                                                                onChange={event => {
+                                                                    if (event.currentTarget.checked) {
+                                                                        setSelectedItems(selectedItems.concat([sortItem]));
+                                                                    } else {
+                                                                        setSelectedItems(selectedItems.filter(e => e.listID !== sortItem.listID))
+                                                                    }
+                                                                }}
+                                                                />
+                                                            <span></span>
+                                                        </label>
+                                                    </div>
+                                                </label>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </li>
+            ))}
+
+        </ul>
 
         </>
 
     )
 
 }
-
-
-
-class ListItems {
-
-    constructor (items:any[]) {
-
-        // this.items = items;
-
-        // this.element = this.createList();
-        // this.setCounters();
-
-    }
-
-    updateList (items:any[]) {
-
-        // this.items = items;
-        // const element = this.createList();
-
-        // this.element.replaceWith(element);
-        // this.element = element;
-
-        // this.setCounters();
-
-        // globalThis.M.AutoInit();
-
-    }
-
-    createList () {
-
-        // const element = $(`<ul class="collapsible list-collaps">`);
-
-        // const sortGroups = sortArray(this.items, "groupName");
-        // const sortSubGroups = sortArray(this.items, "subGroupName");
-        // const sortItem = sortArray(this.items, "listName");
-
-        // for (const item of sortGroups) {
-
-        //     let group = element.find(`[groupID=${item.groupID}]`);
-        //     if (group.length !== 0) continue;
-        //     element.append(`
-        //         <li groupID="${item.groupID}">
-        //             <div class="collapsible-header"><span class="downCounter">0</span> <p>${item.groupName}</p> </div>
-        //             <div class="collapsible-body"> <ul class="collapsible list-collaps subGroups"> </ul> </div>
-        //         </li>
-        //     `);
-
-        // }
-
-        // for (const item of sortSubGroups) {
-
-        //     let subGroup = element.find(`[subGroupID=${item.subGroupID}]`);
-        //     if (subGroup.length !== 0) continue;
-        //     element.find(`[groupID=${item.groupID}]`).find(".subGroups").append(`
-        //         <li subGroupID="${item.subGroupID}">
-        //             <div class="collapsible-header"><span class="downCounter">0</span> <p>${item.subGroupName}</p> </div>
-        //             <div class="collapsible-body"> <ul class="collapsible list-collaps lists"> </ul> </div>
-        //         </li>
-        //     `);
-            
-        // }
-
-        // for (const item of sortItem) {
-
-        //     element.find(`[subGroupID=${item.subGroupID}]`).find(".lists").append(`
-        //         <label class="select-list" for="${item.listID}">
-        //         <div>
-        //             <p>${item.listName}</p>
-        //             <span>a: ${item.aTitel}, b: ${item.bTitel}</span>
-        //         </div>
-        //         <div>
-        //             <label>
-        //                 <input data-listid="${item.listID}" type="checkbox" class="filled-in" id="${item.listID}" ${(item.offline) ? "checked" : ""}>
-        //                 <span></span>
-        //             </label>
-        //         </div>
-        //         </label>
-        //     `);
-
-        // }
-
-        // element.find("[data-listid]").click((event)=>{
-        //     const element = $(event.currentTarget);
-        //     const listID = element.data("listid");
-        //     const checked = element.is(":checked");
-        //     const list = this.items.find(e => e.listID === listID);
-        //     list.offline = checked;
-        //     this.setCounters();
-        //     this.onClick(listID, checked);
-        // });
-        // return element;
-        
-    }
-
-    changes () {
-        // const changes = {
-        //     add: [],
-        //     remove: []
-        // }
-        // for (const list of this.items) {
-        //     if (list.offline !== list.offlineBefore) {
-        //         if (list.offline) changes.add.push(list)
-        //         else changes.remove.push(list)
-        //     }
-        // }
-        // return changes;
-    }
-
-    setCounters () {
-        // this.items
-        // const group = {};
-        // const subGroup = {};
-        // for (const item of this.items) {
-        //     if (!group[item.groupID]) group[item.groupID] = 0;
-        //     if (!subGroup[item.subGroupID]) subGroup[item.subGroupID] = 0;
-        //     if (!item.offline) continue;
-        //     group[item.groupID]++;
-        //     subGroup[item.subGroupID]++;
-        // }
-
-        // this.element.find("[subGroupID]").each((i, element)=>{
-        //     const e:JQuery = $(element);
-        //     e.children(".collapsible-header").children(".downCounter").text(subGroup[e.attr("subGroupID")]);
-        // });
-        // this.element.find("[groupID]").each((i, element)=>{
-        //     const e:JQuery = $(element);
-        //     e.children(".collapsible-header").children(".downCounter").text(group[e.attr("groupID")]);
-        // });
-
-    }
-
-}
-
-
-// class Lists extends Tab implements TabInterface {
-
-//     listItems: ListItems;
-
-
-//     getList (call: {(items: any[])}) {
-
-//         dbService.getListsByGroups((err, items)=>{
-//             if (err) return globalThis.M.toast({html: `Fehler: ${items}`});
-            
-//             items = items.map(e => {return {...e, offlineBefore: e.offline}});
-//             call(items);
-//         })
-
-//     }
-
-//     createList () {
-
-//         this.getList((items)=> {
-
-//             this.listItems = new ListItems(items);
-
-//             this.element.empty().append(statusDisplay,
-//                 this.listItems.element
-//             );
-//             initMaterialize();
-
-//             this.listItems.onClick = () => {
-//                 this.updateCounters();
-//             };
-
-//             this.element.find("[saveChanges]").click(()=>{
-//                 this.saveChanges();
-//             })
-            
-//         });
-
-//     }
-
-// }

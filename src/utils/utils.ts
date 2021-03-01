@@ -1,3 +1,5 @@
+import config from "./config";
+
 export function getStartOfDay(date: Date = new Date()) {
    
     const d= date;
@@ -87,22 +89,22 @@ export function initThemeMode () {
 
 export function getColorPercent (color1:string, ratio: number) {
 
-    // let color2 = 'F4F5F7';
-    // if (globalThis.config.get("general:darkMode")) {
-    //     color2 = '222222';
-    // }
-    // ratio = ratio / 4;
+    let color2 = 'F4F5F7';
+    if (config.get("general:darkMode")) {
+        color2 = '222222';
+    }
+    ratio = ratio / 4;
 
-    // const hex = function(x) {
-    //     x = x.toString(16);
-    //     return (x.length == 1) ? '0' + x : x;
-    // };
+    const hex = function(x: string | number | any[]) {
+        x = x.toString(16);
+        return (x.length == 1) ? '0' + x : x;
+    };
 
-    // const r = Math.ceil(parseInt(color1.substring(0,2), 16) * ratio + parseInt(color2.substring(0,2), 16) * (1-ratio));
-    // const g = Math.ceil(parseInt(color1.substring(2,4), 16) * ratio + parseInt(color2.substring(2,4), 16) * (1-ratio));
-    // const b = Math.ceil(parseInt(color1.substring(4,6), 16) * ratio + parseInt(color2.substring(4,6), 16) * (1-ratio));
+    const r = Math.ceil(parseInt(color1.substring(0,2), 16) * ratio + parseInt(color2.substring(0,2), 16) * (1-ratio));
+    const g = Math.ceil(parseInt(color1.substring(2,4), 16) * ratio + parseInt(color2.substring(2,4), 16) * (1-ratio));
+    const b = Math.ceil(parseInt(color1.substring(4,6), 16) * ratio + parseInt(color2.substring(4,6), 16) * (1-ratio));
 
-    // return hex(r) + hex(g) + hex(b);
+    return hex(r) + hex(g) + hex(b);
 
 }
 

@@ -25,110 +25,6 @@ export default class Swipper {
         this.rotate = kastenElement.find(".rotate");
         this.behind = kastenElement.find(".behind");
         this.front = kastenElement.find(".front");
-
-        for (let i = 1;i<=rounds;i++) {
-            this.root.find(".balken").append(`<div balken="${i}"></div>`);
-        }
-
-        let touchend = 'touchend';
-        if (navigator.userAgent.indexOf("Windows") > 1) {
-            touchend = 'mouseup touchend';
-            this.clickSensitive = 150;
-        }
-
-        this.root.find(".right").click(() => {
-            this.triggerRight();
-        })
-        this.root.find(".wrong").click(() => {
-            this.triggerWrong();
-        })
-        this.root.find(".toggleTurn").click(() => {
-            this.toggleTurn();
-        })
-        
-
-        $(document).bind(touchend, ()=>{
-            if (this.inFocus && new Date().getTime() - this.timetamp > this.clickSensitive) this.endSwipe();
-        });
-
-        this.rotate.bind('touchstart mousedown', (event:any) => {
-
-            try {
-                event.clientX = event.originalEvent.touches ?  event.originalEvent.touches[0].pageX : event.clientX;
-            } catch (error) {}
-
-            this.inFocus = true;
-            this.timetamp = new Date().getTime();
-            this.startClientX = event.clientX;
-
-            $("body").addClass("noselect");
-            this.rotate.addClass("grabbing");
-
-        });
-
-        $(document).bind('touchmove mousemove', (event:any) => {
-            if (this.inFocus && new Date().getTime() - this.timetamp > this.clickSensitive) {
-                event.clientX = event.originalEvent.touches ?  event.originalEvent.touches[0].pageX : event.clientX;
-                this.swiping(event);
-            }
-        });
-
-        this.rotate.bind(touchend, (event) => {
-            if (this.inFocus && new Date().getTime() - this.timetamp <= this.clickSensitive) {
-                this.toggleTurn();
-                this.inFocus = false;
-            }
-        });
-
-    }
-
-    toggleTurn () {
-
-        if (this.turnBlocked) return;
-
-        this.turnBlocked = true;
-        let degre:number = 0;
-
-        if (this.isFrontOpen) this.isFrontOpen = false;
-        else this.isFrontOpen = true;
-
-        try {
-            degre = this.rotateDeg;
-        } catch (error) { }
-
-        const toDegre: number = degre + 180;
-
-        this.rotate.css({ transform: `rotateY(${toDegre}deg)` });
-        this.rotate.find("p").animate({
-            opacity: 0
-        }, 125)
-
-        setTimeout(() => {
-
-            this.displayFront();
-            this.rotate.find("p").animate({
-                opacity: 1
-            }, 125);
-
-            setTimeout(() => {
-                this.rotate.addClass("notransition");
-                this.rotate.css({ transform: `rotateY(0deg)` });
-                this.toggleText();
-                this.displayFront();
-
-                setTimeout(() => {
-                    this.rotate.removeClass("notransition");
-                    this.turnBlocked = false;
-                }, 50);
-                
-            }, 150);
-
-        }, 150);
-
-        pulseElement(this.root.find(".toggleTurn"), () => {
-            this.toggleTurn();
-        });
-
     }
 
     toggleText () {
@@ -149,29 +45,6 @@ export default class Swipper {
             this.behind.css("z-index", 0);
         }
         this.root.find(".status").children().eq(1).text(this._typeNames[this.isFrontOpen ? 1 : 0]);
-
-    }
-
-    swiping (event) {
-
-        let swipe = this.swipe = event.clientX - this.startClientX;
-        let color = "4caf50";
-        if (swipe < 0) color = "ff5722";
-
-        const css = {
-            background: "#" + getColorPercent(color, Math.sqrt(Math.pow(swipe, 2))/300)
-        }
- 
-        this.front.css(css);
-        this.behind.css(css);
-        this.rotate.addClass("transition_hundert");
-        this.rotate.css({ 
-            transform: `translateX(${swipe}px) rotateY(${this.rotateDeg}deg) translateY(${swipe/20}px) rotateZ(${swipe/10}deg)`
-        });
-
-        setTimeout(() => {
-            this.rotate.removeClass("transition_hundert");
-        }, 10);
 
     }
 
@@ -232,29 +105,6 @@ export default class Swipper {
 
     }
 
-    endSwipe () {
-
-        this.rotate.removeClass("transition_hundert");
-        this.inFocus = false;
-
-        if (this.swipe >= 100) this.triggerRight();
-        else if (this.swipe <= -100) this.triggerWrong();
-        else {
-            this.rotate.css({ 
-                transform: `rotateY(${this.rotateDeg}deg)`
-            });
-
-            this.front.css({background: "var(--c-white)"})
-            this.behind.css({background: "var(--c-white)"})
-        }
-
-        $("body").removeClass("noselect");
-        this.rotate.removeClass("grabbing");
-
-        this.swipe = 0;
-
-    }
-
     updateBalken (stats: number[]) {
 
         for (const i in stats) {
@@ -274,14 +124,6 @@ export default class Swipper {
             multiLine: true
         });
 
-    }
-
-    get rotateDeg ():number {
-        try {
-            return parseInt(this.rotate[0].style.transform.match(/rotateY\((.*?)\)/)[1]);
-        } catch (error) {
-            return 0;
-        }
     }
 
     get isBehind ():Boolean {

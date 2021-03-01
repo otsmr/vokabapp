@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Switch, Route, HashRouter } from "react-router-dom"
+import { Switch, Route, HashRouter, Redirect } from "react-router-dom"
 
 import "./assets/sass/main.sass"
-// const g = globalThis;
-// g.VERSION = "1.0.0";
-
-// import "./utils/events"
-// import "./utils/config"
-// import "./utils/notifications"
-
-// import { initThemeMode } from "./utils/utils"
-
-// import "./tabs/index"
-
-// import "./layout/navigation"
-// import "./layout/threePointMenu"
-// import "./layout/materialize"
-// import displayIntroduction from "./layout/introduction"
-
-// import { initSync, syncAll } from "./api/sync";
 
 import Navigation from "./parts/Navigations"
 import Settings from './pages/Settings';
@@ -31,18 +14,25 @@ import Statistics from './pages/Statistics';
 import events from './utils/events';
 import config from './utils/config';
 import Overview from './pages/Overview';
+import Stack from './pages/Stack';
+import Introduction from './pages/Introduction';
 
 function getTitel () {
     let pageID = location.hash.slice(location.hash.indexOf("/")+1);
+    if (pageID.indexOf("/") > -1) {
+        pageID = pageID.slice(0, pageID.indexOf("/"));
+    }
 
     switch (pageID) {
         case "settings": return "Einstellungen";
         case "statistics": return "Statistik";
         case "overview": return "Kartenübersicht";
+        case "stack": return "Stapel";
         default: return "VokabApp";
     }
 }
 
+const setThemeMode = () => document.querySelector("body")?.classList[(config.get("general:darkMode")) ? "add" : "remove"]("dark");
 
 function VokabApp (props: {}) {
 
@@ -53,10 +43,11 @@ function VokabApp (props: {}) {
 
         initDatabase();
         initMaterialize();
+        setThemeMode();
         setIsLoading(false);
 
         events.on("configChange", () => {
-            document.querySelector("body")?.classList[(config.get("general:darkMode")) ? "add" : "remove"]("dark");
+            setThemeMode();
         })
 
         window.addEventListener("hashchange", () => {
@@ -76,24 +67,36 @@ function VokabApp (props: {}) {
                     <p className="footer">VokabApp wird geladen</p>
                 </div>
             ) : (
-                <>
-                <Navigation title={title} />
-                <main>
-                    <Switch>
+                <Switch>
+                    <Route path="/intro" exact>
+                        <Introduction />
+                    </Route>
+                    <Route path="*">
+                        <Navigation title={title} />
+                        <main>
+                            <Switch>
 
-                        <Route path="/settings" exact >
-                            <Settings />
-                        </Route>
-                        <Route path="/statistics" exact >
-                            <Statistics />
-                        </Route>
-                        <Route path="/overview" exact >
-                            <Overview />
-                        </Route>
+                                <Route path="/stack" >
+                                    <Stack />
+                                </Route>
+                                <Route path="/settings" exact >
+                                    <Settings />
+                                </Route>
+                                <Route path="/statistics" exact >
+                                    <Statistics />
+                                </Route>
+                                <Route path="/overview" exact >
+                                    <Overview />
+                                </Route>
 
-                    </Switch>
-                </main>
-                </>
+                                <Route path="*">
+                                    <Redirect to="/overview"/>
+                                </Route>
+
+                            </Switch>
+                        </main>
+                    </Route>
+                </Switch>
             )}
     
         </HashRouter>

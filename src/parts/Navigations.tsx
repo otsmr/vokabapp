@@ -83,14 +83,14 @@ export default function Navigation (props: {
                 <div style={{height: "50px"}}>
                 </div>
                 <ul>
-                    <li><Link to="stack"> <span className="m-icon">horizontal_split</span> Stapel</Link></li>
-                    <li><Link to="overview"> <span className="m-icon">how_to_vote</span> Kartenübersicht</Link></li>
-                    <li><Link to="statistics"> <span className="m-icon">trending_up</span> Statistik</Link></li>
+                    <li><Link to="/stack"> <span className="m-icon">horizontal_split</span> Stapel</Link></li>
+                    <li><Link to="/overview"> <span className="m-icon">how_to_vote</span> Kartenübersicht</Link></li>
+                    <li><Link to="/statistics"> <span className="m-icon">trending_up</span> Statistik</Link></li>
                 </ul>
                 <hr />
                 <ul>
-                    <li><Link to="settings"> <span className="m-icon">settings_applications</span>Einstellungen</Link></li>
-                    <li><Link to="help"> <span className="m-icon">help</span> Hilfe</Link></li>
+                    <li><Link to="/settings"> <span className="m-icon">settings_applications</span>Einstellungen</Link></li>
+                    <li><Link to="/help"> <span className="m-icon">help</span> Hilfe</Link></li>
                 </ul>
             </div>
         </nav>

@@ -10,7 +10,7 @@ import React from 'react';
 */
 
 export default function (props: {
-    next: {(): void}
+    nextPath?: string
 }) {
 
     //TODO: Einführung einrichten
@@ -29,7 +29,12 @@ export default function (props: {
                 VokabApp
             </div>
 
-            <div className="button" onClick={props.next}>
+            <div className="button" onClick={_ => {
+                if (props.nextPath) 
+                    location.hash = "#/" + props.nextPath
+                else
+                    location.hash = "#/stack"
+            }}>
                 App starten
             </div>
 

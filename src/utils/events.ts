@@ -58,5 +58,6 @@ events.startApp = () => {
 events.error = (type: string, err: any) => {
     triggers("error", type, err);
 }
+events.triggers = triggers;
 
 export default events;

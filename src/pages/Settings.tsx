@@ -7,41 +7,12 @@ import events from '../utils/events';
 moment.locale('de');
 
 import Modal from '../parts/Modals';
+import { registerExtraMenuItem } from '../parts/ExtraMenu';
 
 // import { initMaterialize } from "../../layout/materialize"
 
 // import apiClient from "../../api/client"
 // import { syncAll } from "../../api/sync"
-
-export const ExtraMenuSettingItems = [
-    {
-        title: "Zurücksetzen",
-        click: () => {
-            // this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
-            //     config.reset();
-            //     const oldElement = this.element;
-            //     oldElement.replaceWith(this.create());
-            //     initMaterialize();
-            //     this.updateConfigs();
-            // });
-            // this.openModal("resetSettings");
-        }
-    },
-    {
-        title: "Willkommen",
-        click: () => {
-            // introduction();
-        }
-    },
-    {
-        title: "About",
-        modal: (
-            <Modal>
-                <ModalAbout version="10.0" />
-            </Modal>
-        )
-    }
-]
 
 function ModalAbout (props: {
     version: string
@@ -279,6 +250,36 @@ export default function (props: {}) {
             if (changes) updateConfigs();
             else updateLastSync();
         })
+
+        registerExtraMenuItem("settings", [
+            {
+                title: "Zurücksetzen",
+                onClick: () => {
+                    // this.modals.find("[resetSettings] [reset]").off("click").click(()=>{
+                    //     config.reset();
+                    //     const oldElement = this.element;
+                    //     oldElement.replaceWith(this.create());
+                    //     initMaterialize();
+                    //     this.updateConfigs();
+                    // });
+                    // this.openModal("resetSettings");
+                }
+            },
+            {
+                title: "Willkommen",
+                onClick: () => {
+                    // introduction();
+                }
+            },
+            {
+                title: "About",
+                modal: (
+                    <Modal>
+                        <ModalAbout version="10.0" />
+                    </Modal>
+                )
+            }
+        ]);
 
     }, [])
 

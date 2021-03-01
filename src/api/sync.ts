@@ -51,8 +51,6 @@ export function syncMetaData (done: {(err: boolean): void} = () => {}) {
             
             if (!err) {
 
-                console.log(data);
-
                 await dbService.importMetadata(data);
 
                 return done(true);

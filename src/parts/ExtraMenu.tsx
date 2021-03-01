@@ -1,24 +1,68 @@
 import React, { useEffect } from 'react';
 import { useState } from "react";
-import { ExtraMenuSettingItems } from '../pages/Settings';
+import { initMaterialize } from '../utils/materialize';
+import events from '../utils/events';
+
+
+interface IMenuItem {
+    title: string,
+    onClick?: {(): void},
+    modal?: JSX.Element
+}
+
+const registerdMenuItems: {
+    pageid: string,
+    menuItems: IMenuItem[]
+}[] = [];
+
+export function registerExtraMenuItem (pageid: string, menuItems: IMenuItem[]) {
+
+    if (registerdMenuItems.find(e => e.pageid === pageid))
+        return;
+
+    registerdMenuItems.push({
+        pageid,
+        menuItems
+    })
+
+    events.triggers("new-extra-menu-registered");
+
+}
+
 
 export default function (props: {}) {
 
-    let _m: {
-        title: string,
-        modal?: JSX.Element
-    }[] = [];
-
+    let _m: IMenuItem[] = [];
     const [menuItems, setMenuItems] = useState(_m);
     const [modal, setModal] = useState(<div></div>);
     const [currentHash, setCurrentHash] = useState(location.hash);
 
+    function getExtraMenu () {
+        let pageid = location.hash.slice(location.hash.indexOf("/")+1);
+        let found = registerdMenuItems.find(e => e.pageid === pageid);
+
+        if (found)
+            return found.menuItems;
+
+        return [];
+
+    }
+
+    useEffect(() => {
+        initMaterialize();
+    }, [menuItems]);
+
     useEffect(() => {
 
-        setMenuItems(ExtraMenuSettingItems);
+        setMenuItems(getExtraMenu());
+        
+        events.on("new-extra-menu-registered", () => {
+            setMenuItems(getExtraMenu());
+        })
 
         window.addEventListener("hashchange", () => {
             setCurrentHash(location.hash);
+            setMenuItems(getExtraMenu());
         });
 
         // TODO: realy bad workaround

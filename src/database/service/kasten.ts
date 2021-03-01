@@ -1,8 +1,55 @@
-import React from 'react';
 import { DBService, CallBack } from "./main";
 import { getStartOfDay, getDBTime } from "./../../utils/utils";
 import { shuffleArray } from "../../utils/array";
 import config from '../../utils/config';
+import { idbCon } from "../init";
+
+
+export interface IStackOverviewItems {
+    listName: string;
+    listID: number;
+    groupName: string;
+    aTitel: string;
+    bTitel: string;
+    subGroupName: string
+}
+export function getListOverviewForStack (call: {(
+    err: boolean,
+    data?: IStackOverviewItems[]
+): void}) {
+
+    idbCon
+    .select({
+        from: "lists",
+        groupBy: "listID",
+        join: [
+            { with: "items", on: "lists.listID=items.listID" },
+            { with: "subGroups", on: "lists.subGroupID=subGroups.subGroupID" },
+            { with: "groups", on: "groups.groupID=subGroups.groupID" }
+        ]
+    })
+    .then((data: any) => {
+
+        console.log(data);
+        
+        call(false, data.map((e: IStackOverviewItems) => { return {
+            listName: e.listName,
+            listID: e.listID,
+            groupName: e.groupName,
+            aTitel: e.aTitel,
+            bTitel: e.bTitel,
+            subGroupName: e.subGroupName
+        }}));
+
+    })
+    .catch(error => {
+        call(true);
+        console.error("getListOverviewForStack: ", error);
+    });
+
+
+
+}
 
 class DBKastenService extends DBService {
 
